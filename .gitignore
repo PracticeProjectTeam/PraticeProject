@@ -1,0 +1,5 @@
+#忽略单个文件，可以带路径
+readme.txt
+#忽略所有txt文件
+*.txt
+/node_modules
