@@ -1,13 +1,13 @@
 <template>
-  <div>
-    Home
-    <el-button>默认按钮</el-button>
-  </div>
+ <div>
+
+ </div>
 </template>
 <script>
 export default {
-  name: 'Home'
-}
+  name: "Home",
+};
 </script>
-<style lang="less" rel="stylesheet/less" scoped>
+<style scoped>
+
 </style>
