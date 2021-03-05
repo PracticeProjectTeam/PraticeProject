@@ -1,7 +1,6 @@
 <template>
-  <div>
+  <div class="homeContainer" >
     Home
-    <el-button>默认按钮</el-button>
   </div>
 </template>
 <script>
@@ -10,4 +9,7 @@ export default {
 }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
+  .homeContainer{
+    height: 5000px;
+  }
 </style>
