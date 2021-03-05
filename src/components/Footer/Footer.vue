@@ -64,6 +64,7 @@ export default {
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
  .footerContainer{
+   background-color: #fff;
    height: 340px;
    .footer-menu{
      width: 1220px;
