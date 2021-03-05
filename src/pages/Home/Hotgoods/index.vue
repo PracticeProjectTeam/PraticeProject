@@ -45,7 +45,7 @@
         <div class="hotselect"></div>
         <div class="hotprice">
           <span>￥129.00</span>
-          <span>￥249.00</span>
+          <span class="discount">￥249.00</span>
         </div>
       </div>
       <div class="hotgoods">
@@ -58,7 +58,8 @@
         </div>
         <div class="hotselect"></div>
         <div class="hotprice">
-          <span>￥299.00</span>
+          <span>￥149.00</span>
+          <span class="discount">￥299.00</span>
         </div>
       </div>
     </div>
@@ -73,6 +74,8 @@ export default {
 .hot{
     margin-top: 25px;
     border: 1px solid rgba(0,0,0,.14);
+    border-radius: 8px;
+    overflow: hidden;
     .allgoods{
         display: flex;
         .hotgoods{
@@ -120,6 +123,13 @@ export default {
                 color: #d44d44;
                 text-align: center;
                 font-weight: bolder;
+                .discount{
+                  font-size: 12px;
+                  text-decoration: line-through;
+                  color: #ccc;
+                  padding-left: 10px;
+                  font-weight: 400;
+                }
             }
         }
     }
