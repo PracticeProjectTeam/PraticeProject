@@ -122,8 +122,15 @@
             <img _ngcontent-c7="" src="https://resource.smartisan.com/resource/090895d3a227c6b345736b2859fd3ec8.png?x-oss-process=image/resize,w_1525/indexcrop,y_1440,i_5/format,webp/quality,Q_100">
          </div>
       </section>
-      <section>
-
+      <section class="gray-box clearfix">
+         <article class="headline">
+            <h2>相关推荐</h2>
+         </article>
+         <ul class="recommend-items clearfix">
+            <li class="recommend-item-four">
+               
+            </li>
+         </ul>
       </section>
     </div>
   </div>
