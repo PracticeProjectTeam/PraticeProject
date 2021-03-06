@@ -1,8 +1,6 @@
 <template>
 
   <div class="wrapper">
-    <div class="header"></div>
-    <div class="header2"></div>
     <div class="item-wrapper">
       <section class="gray-box clearfix">
         <div class="gallery-wrapper clearfix">
@@ -10,20 +8,8 @@
             <!--缩略图-->
             <figure class="thumbnail">
               <ul>
-                <li class="on">
-                  <img src="../../../public/image/item/1.png">
-                </li>
-                <li>
-                  <img alt src="../../../public/image/item/2.png">
-                </li>
-                <li>
-                  <img alt src="../../../public/image/item/3.png">
-                </li>
-                <li>
-                  <img alt src="../../../public/image/item/4.png">
-                </li>
-                <li>
-                  <img alt src="../../../public/image/item/5.png">
+                <li @click="changeCurrentIndex(index)" :class="{on:imgCurrentIndex==index}" v-for="(item,index) in shop_info.ali_images" :key="item">
+                  <img :src="item">
                 </li>
               </ul>
             </figure>
@@ -31,7 +17,7 @@
             <figure class="thumb">
               <ul>
                 <li class="on">
-                  <img alt src="../../../public/image/item/1.png">
+                  <img alt :src="shop_info.ali_images[imgCurrentIndex]">
                 </li>
               </ul>
             </figure>
@@ -41,12 +27,12 @@
         <div class="item-information">
 
           <article class="item-title">
-            <h1>Smartisan 真无线蓝牙耳机 Pro</h1>
-            <h2>通话降噪 全新升级</h2>
+            <h1>{{shop_info.title}}</h1>
+            <h2>{{shop_info.sub_title}}</h2>
             <div class="item-price">
               <span>
                 <em>￥</em>
-                <i>129.00</i>
+                <i>{{price}}</i>
               </span>
             </div>
           </article>
@@ -58,11 +44,20 @@
               <div class="activities-list">
                 <article class="activities-item">
                   <figure class="tag-wrapper">
-                    <span class="tag tag-red">新人礼 </span>
+                    <span class="tag tag-red">新人礼</span>
                   </figure>
-                  <label>
+                  <label style="color:gray">
                     下载 App 领新人大礼包，首单优惠购最低只要 ¥ 9.9
                     <a href="http://baidu.com">查看详情</a>
+                  </label>
+                </article>
+                <article class="activities-item" v-for="item in promotions" :key="item.id">
+                  <figure class="tag-wrapper">
+                    <span class="tag tag-red">{{item.tag}} </span>
+                  </figure>
+                  <label v-if="item.type === 9">
+                    满 {{item.rule.result.discount[0].full_money}} 减 {{item.rule.result.discount[0].decrease_money}}
+                    <a href="http://baidu.com">查看活动详情</a>
                   </label>
                 </article>
               </div>
@@ -70,13 +65,13 @@
           </section>
 
           <!--颜色选择-->
-          <section class="item-spec-wrapper clearfix item-spec-package">
+          <section class="item-spec-wrapper clearfix item-spec-package" v-for="item in shop_info.spec_v2" :key="item.spec_id">
             <div class="item-spec">
-              <span class="spec-title">颜色选择</span>
+              <span class="spec-title">{{item.spec_name}}选择</span>
               <ul class="spec-info">
-                <li class="active">
+                <li class="active" v-for="(item2) in item.spec_values" :key="item2.id">
                   <aside class="spec-item item-inline">
-                    <h1 class="item-name">白色</h1>
+                    <h1 class="item-name">{{item2.item_value}}</h1>
                   </aside>
                 </li>
               </ul>
@@ -88,9 +83,9 @@
               <span class="do-count-title">数量选择</span>
               <aside class="do-count">
                 <div class="select">
-                  <span class="down disabled">-</span>
-                  <span class="num">1</span>
-                  <span class="up disabled">+</span>
+                  <span class="down" :class="[stock.stock>0 && count>0?'':'disabled']">-</span>
+                  <span class="num">{{count}}</span>
+                  <span class="up" :class="[stock.stock>0?'':'disabled']">+</span>
                 </div>
               </aside>
             </div>
@@ -109,35 +104,154 @@
         </div>
       </section>
       <section class="gray-box clearfix">
-         <article class="headline">
-            <h2>产品信息</h2>
-
-         </article>
-         <div class="item-info">
-            <img src="https://resource.smartisan.com/resource/090895d3a227c6b345736b2859fd3ec8.png?x-oss-process=image/resize,w_1525/indexcrop,y_1440,i_0/format,webp/quality,Q_100">
-            <img _ngcontent-c7="" src="https://resource.smartisan.com/resource/090895d3a227c6b345736b2859fd3ec8.png?x-oss-process=image/resize,w_1525/indexcrop,y_1440,i_1/format,webp/quality,Q_100">
-            <img _ngcontent-c7="" src="https://resource.smartisan.com/resource/090895d3a227c6b345736b2859fd3ec8.png?x-oss-process=image/resize,w_1525/indexcrop,y_1440,i_2/format,webp/quality,Q_100">
-            <img _ngcontent-c7="" src="https://resource.smartisan.com/resource/090895d3a227c6b345736b2859fd3ec8.png?x-oss-process=image/resize,w_1525/indexcrop,y_1440,i_3/format,webp/quality,Q_100">
-            <img _ngcontent-c7="" src="https://resource.smartisan.com/resource/090895d3a227c6b345736b2859fd3ec8.png?x-oss-process=image/resize,w_1525/indexcrop,y_1440,i_4/format,webp/quality,Q_100">
-            <img _ngcontent-c7="" src="https://resource.smartisan.com/resource/090895d3a227c6b345736b2859fd3ec8.png?x-oss-process=image/resize,w_1525/indexcrop,y_1440,i_5/format,webp/quality,Q_100">
-         </div>
+        <article class="headline">
+          <h2>产品信息</h2>
+        </article>
+        <div class="item-info">
+          <img :src="goods_view">
+        </div>
       </section>
       <section class="gray-box clearfix">
-         <article class="headline">
-            <h2>相关推荐</h2>
-         </article>
-         <ul class="recommend-items clearfix">
-            <li class="recommend-item-four">
-               
-            </li>
-         </ul>
+        <article class="headline">
+          <h2>相关推荐</h2>
+        </article>
+        <ul class="recommend-items clearfix">
+          <li class="recommend-item-four">
+
+          </li>
+        </ul>
       </section>
+      <div class="product-fix-bar " :class="{follow:footer}">
+        <div class="fix-bar-wrapper">
+          <h1 class="bar-text">您已选择了</h1>
+          <div class="bar-device-info">
+            <h1 class="clearfix">
+              <span class="title">Smartisan 真无线蓝牙耳机 Pro × 1 </span>
+            </h1>
+            <h2>白色</h2>
+          </div>
+          <div v-if="stock.stock&&stock.in_stock" class="bar-btn">
+            <a>加入购物车</a>
+          </div>
+          <div :class="[stock.stock>0&&stock.in_stock?'white-btn':'disabled notice','bar-btn']">
+            <a v-if="stock.stock&&stock.in_stock">现在购买</a>
+            <a v-else>到货通知</a>
+          </div>
+          <div class="no-discount-price">
+            <div class="bar-price">
+              <i>￥</i>
+              <span>129.00</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!--客服-->
+    <div>
+      <aside class="service-fixed-bar">
+        <figure class="bar-item cus-service">
+          <span class="icon icon-cus-service"></span>
+          <figcaption class="txt">联系客服</figcaption>
+        </figure>
+        <figure class="bar-item backtop">
+          <span class="icon icon-backtop"></span>
+          <figcaption class="txt">回到顶部</figcaption>
+        </figure>
+      </aside>
     </div>
   </div>
 </template>
 <script>
+//  引入vuex的辅助函数
+import { mapState, mapGetters } from "vuex";
 export default {
   name: "Item",
+  data() {
+    return {
+      imgCurrentIndex: 0, //当前缩略图的下标
+      footer: true, //购买条是否固定定位
+      promotions: [], // 优惠活动
+      count: 1, // 加入购物车的数量
+      productCurrentIndex:0,
+      skuInfos:[], //可选择的skuinfos
+    };
+  },
+  mounted() {},
+  updated() {
+    let wrapperHeight = document.querySelector(".wrapper").clientHeight;
+    document.addEventListener("scroll", () => {
+      let height =
+        document.documentElement.scrollTop - wrapperHeight + 340 + 75 + 45;
+
+      if (height > 0) {
+        this.footer = false;
+      } else {
+        this.footer = true;
+      }
+    });
+
+    this.getPromotions(true);
+    this.getSkuInfo(1001628)
+  },
+  methods: {
+    // 选择缩略图
+    changeCurrentIndex(index) {
+      this.imgCurrentIndex = index;
+    },
+
+    // 获取所有的促销活动
+    async getPromotions(with_num) {
+      const result = await this.$API.reqPromotions(with_num);
+      if (result.status == 200) {
+        this.promotions = result.data.data.list.filter((item) => {
+          const goods_code = this.product_info.goods_code;
+          if (item.rule.condition.main_skus.toString()) {
+            return item.rule.condition.main_skus.includes(Number(goods_code));
+          }
+        });
+      }
+    },
+
+    // 获取所有的sku_info
+    async getSkuInfo(ids) {
+      const result = await this.$API.reqSpus(ids)
+      if(result.status === 200) {
+        console.log(111111111111111111)
+        console.log(result.data.data.list[0])
+        this.skuInfos = result.data.data.list[0].sku_info
+      }
+    }
+  },
+  computed: {
+    ...mapState({
+      // //
+      // itemInfo:(state)=>state.item.itemInfo,
+    }),
+    // 产品详情信息对象
+    ...mapGetters([
+      "shop_info",
+      "product_info",
+      "price",
+      "goods_view",
+      "stock",
+      'sku_info'
+    ]),
+  },
+  watch: {
+    // 监视route,route信息改变就请求商品信息数据
+    $route: {
+      handler(route) {
+        // 获取路由地址中的params的参数ids
+        let ids = route.params.ids;
+        // 调用action获取产品信息数据
+        this.$store.dispatch("getItemInfo", ids);
+      },
+      // 该回调将回在侦听开始之后被立即调用
+      immediate: true,
+    },
+  },
 };
 </script>
 <style lang='less' rel='stylesheet/less' scoped>
@@ -159,16 +273,10 @@ html {
   overflow: hidden;
   width: 100%;
 }
-.header {
-  height: 45px;
-  z-index: 30;
-}
-.header2 {
-  height: 65px;
-}
+
 .item-wrapper {
   min-height: 600px;
-  padding-bottom: 60px;
+  // padding-bottom: 60px;
   color: #666;
   font-size: 14px;
   .gray-box {
@@ -200,7 +308,7 @@ html {
             padding: 12px;
             margin-top: 10px;
             border: 1px solid rgba(0, 0, 0, 0.06);
-            &:on {
+            &.on {
               padding: 10px;
               border: 3px solid rgba(0, 0, 0, 0.2);
             }
@@ -304,8 +412,12 @@ html {
             float: left;
             width: 472px;
             height: 100%;
+            & article:not(:first-child) {
+              margin-top: 12px;
+            }
             .activities-item {
               display: flex;
+              white-space: nowrap;
               font-size: 12px;
               line-height: 20px;
               height: 20px;
@@ -340,7 +452,7 @@ html {
                 }
               }
               label {
-                color: gray;
+                color: #d44d44;
                 display: inline-block;
                 position: relative;
                 left: -80px;
@@ -402,7 +514,7 @@ html {
                 }
               }
             }
-            li.active {
+            & > li.active {
               color: #999;
               border: 1px solid #6a8fe6;
               transition: none;
@@ -411,12 +523,14 @@ html {
           }
         }
       }
-      .item-do.count-wrapper {
+      //数量选择
+      .item-do-count-wrapper {
         margin: 0;
         padding: 30px 0;
         .item-do-count {
           position: relative;
-          .do-count-title {
+          // display: flex;
+          & .do-count-title {
             width: 85px;
             height: 28px;
             line-height: 28px;
@@ -424,72 +538,89 @@ html {
             font-size: 14px;
             float: left;
           }
-          .do-count {
-             position: relative;
-             float: left;
-             width: 472px;
-             height: 100%;
-          }
-          .select {
-             position:absolute;
-             left: 0;
-             top: -3px;
-             overflow: hidden;
-             width: 128px;
-             height: 40px;
-             text-align: center;
-             .down.disabled .up.disabled {
-                cursor:not-allowed;
-             }
-             .down {
-                margin: 0;
-             }
-             .up {
-                float: right;
-                margin: 0;
-             }
-             .down:before  .up:before {
-                content:'';
-                position:absolute;
-                left: -4px;
-                right: -4px;
-                top: 0;
-                height: 45px;
-                background: url("http://static.smartisanos.cn/index/assets/images/updown-select-icon.ce7e0ffb6ed63599a7537ee7ca06827c.png");
-                background-size: 100% auto;
-             }
-             .down.disabled:before .down.display:hover:before{
-                background-position: 0 -300px;
-             }
-             .down .up {
-                position: relative;
-                float: left;
-                display: inline-block;
-                width: 36px;
-                height: 36px;
-                line-height: 40px;
-                text-indent: -9999em;
-                user-select: none;
-             }
-
-             .num {
-                position: relative;
-                overflow: hidden;
-                float: left;
-                display: inline-block;
-                width: 56px;
-                height: 18px;
-                margin: 7px 0 0;
-                border: none;
-                border-radius: 3px;
-                line-height: 18px;
-                text-align: center;
-                font-size: 14px;
-                font-weight: 700;
-                color: #454549;
-             }
+          & .do-count {
+            position: relative;
+            float: left;
+            width: 472px;
+            height: 100%;
           }
         }
+      }
+      .select {
+        position: absolute;
+        left: 0;
+        top: -3px;
+        overflow: hidden;
+        width: 128px;
+        height: 40px;
+        text-align: center;
+        & .num {
+          position: relative;
+          overflow: hidden;
+          float: left;
+          display: inline-block;
+          width: 56px;
+          height: 18px;
+          margin: 7px 0 0;
+          border: none;
+          border-radius: 3px;
+          line-height: 18px;
+          text-align: center;
+          font-size: 14px;
+          font-weight: 700;
+          color: #454549;
+        }
+      }
+      .select .down {
+        position: relative;
+        float: left;
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        line-height: 40px;
+        text: index -9999em;
+        user-select: none;
+      }
+      .select .up {
+        position: relative;
+        float: left;
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        line-height: 40px;
+        text: index -9999em;
+        user-select: none;
+      }
+      .select .down:before {
+        content: "";
+        position: absolute;
+        left: -4px;
+        right: -4px;
+        top: 0;
+        height: 45px;
+        background: url("http://static.smartisanos.cn/index/assets/images/updown-select-icon.ce7e0ffb6ed63599a7537ee7ca06827c.png");
+        background-size: 100% auto;
+        background-position: 0 -300px;
+      }
+      .select .down.disabled:before {
+        background-position: 0 -60px;
+      }
+      .select .up:before {
+        content: "";
+        position: absolute;
+        left: -4px;
+        right: -4px;
+        top: 0;
+        height: 45px;
+        background: url("http://static.smartisanos.cn/index/assets/images/updown-select-icon.ce7e0ffb6ed63599a7537ee7ca06827c.png");
+        background-size: 100% auto;
+        background-position: 0 0;
+      }
+      .disabled {
+        cursor:not-allowed;
+      }
+      .select .up.disabled:before {
+        background-position: 0 -240px;
       }
       .sku-custom-tips-wrapper {
         margin: 0;
@@ -536,31 +667,202 @@ html {
       display: table;
     }
     .headline {
-       position: relative;
-       z-index: 10;
-       height: 60px;
-       padding: 0 10px 0 24px;
-       border-bottom: 1px solid #d4d4d4;
-       border-radius: 8px 8px 0 0;
-       box-shadow: 0 1px 7px rgb(0, 0, 0 / 6%);
-       background: linear-gradient(#fbfbfb, #ececec);
-       line-height: 60px;
-       font-size: 18px;
-       color: #333;
-       h2 {
-          font-size: 100%;
-          font-weight: 400;
-       }
+      position: relative;
+      z-index: 10;
+      height: 60px;
+      padding: 0 10px 0 24px;
+      border-bottom: 1px solid #d4d4d4;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 1px 7px rgb(0, 0, 0 / 6%);
+      background: linear-gradient(#fbfbfb, #ececec);
+      line-height: 60px;
+      font-size: 18px;
+      color: #333;
+      h2 {
+        font-size: 100%;
+        font-weight: 400;
+      }
     }
     .item-info {
-       overflow: hidden;
-       margin-bottom: -6px;
-       border-radius: 0 0 10px 10px;
-       img {
-          display: block;
-          margin: 0 auto;
-          max-width: 1220px;
-       }
+      overflow: hidden;
+      margin-bottom: -6px;
+      border-radius: 0 0 10px 10px;
+      img {
+        display: block;
+        margin: 0 auto;
+        max-width: 1220px;
+      }
+    }
+  }
+  .product-fix-bar {
+    width: 100%;
+    height: 60px;
+
+    background: #fafafa;
+    border-top: 1px solid #e3e3e3;
+    box-shadow: 0 -1px 3px rgb(0 0 0 / 4%);
+    z-index: 25;
+    &.follow {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .fix-bar-wrapper {
+      width: 1220px;
+      line-height: 20px;
+      margin: 12px auto 0;
+      .bar-text {
+        color: #707070;
+        font-size: 12px;
+        font-weight: 500;
+        margin-right: 20px;
+        float: left;
+      }
+      .bar-device-info {
+        position: relative;
+        margin-right: 20px;
+        font-size: 14px;
+        float: left;
+        h1 {
+          font-size: 100%;
+          font-weight: 400;
+          .title {
+            color: #707070;
+            float: left;
+            font-weight: 700;
+          }
+        }
+        h2 {
+          font-size: 12px;
+          color: #9d9d9d;
+          font-weight: 400;
+        }
+      }
+      .bar-btn {
+        background-color: #6383c6;
+        background-image: linear-gradient(#6383c6, #4262af);
+        width: 118px;
+        height: 38px;
+        line-height: 38px;
+        text-align: center;
+        color: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+        border-radius: 6px;
+        margin-top: -2px;
+        padding: 1px;
+        float: right;
+        a {
+          color: #fff;
+        }
+
+        &.white-btn {
+          height: 40px;
+          padding: 0;
+          border: 1px solid #dedede;
+          background-color: #f8f8f8;
+          background-image: linear-gradient(#fbfbfb, #f5f5f5);
+          a {
+            height: 40px;
+            line-height: 40px;
+            padding: 0;
+            color: #646464;
+            font-weight: 700;
+            background-color: #f8f8f8;
+            background-image: linear-gradient(#fbfbfb, #f5f5f5);
+            box-shadow: none;
+            text-shadow: none;
+          }
+        }
+        &.notice {
+          background-color: #ffd330;
+          background-image: linear-gradient(#ffd330, #ffd22d);
+          cursor: not-allowed;
+          a {
+            color: #fff;
+            cursor: pointer;
+            background-color: #c7a522;
+            background-image: linear-gradient(#ffd330, #ffd22d);
+            box-shadow: inset 0 1px 2px #ffeb83;
+            text-shadow: none;
+          }
+        }
+      }
+
+      .no-discount-price {
+        float: right;
+        margin-right: 20px;
+        text-align: right;
+        .bar-price {
+          position: relative;
+          font-size: 20px;
+          font-weight: 700;
+          color: #d44d44;
+          line-height: 40px;
+          i {
+            font-style: normal;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.service-fixed-bar {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translate3d(0, -50%, 0);
+  z-index: 999;
+  width: 80px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 18px rgb(0 0 0 / 15%);
+  border-radius: 8px;
+  overflow: hidden;
+  .bar-item {
+    right: 40px;
+    width: 80px;
+    height: 80px;
+    padding: 12px 0 9px;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    &:before {
+      position: absolute;
+      content: "";
+      top: 1px;
+      right: 0;
+      left: 0;
+      width: 100%;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    .icon.icon-cus-service {
+      background: url(https://static.smartisanos.cn/index/assets/images/icon-cus-service@2x.bcaf6deda3ace302acd6f8cfa8cbb1ae.png)
+        no-repeat 50%;
+      background-image: -webkit-image-set(url(https://static.smartisanos.cn/index/assets/images/icon-cus-service@2x.bcaf6deda3ace302acd6f8cfa8cbb1ae.png) 1x,url(https://static.smartisanos.cn/index/assets/images/icon-cus-service@3x.5c2361d8c08df8da86d294499841e15b.png) 2x);
+      background-size: 36px;
+    }
+    .icon.icon-backtop {
+      background: url(https://static.smartisanos.cn/index/assets/images/icon-backtop@2x.09b1d3c5be6fe8ff132de51901780d9b.png)
+        no-repeat 50%;
+      background-image: -webkit-image-set(url(https://static.smartisanos.cn/index/assets/images/icon-backtop@2x.09b1d3c5be6fe8ff132de51901780d9b.png) 1x,url(https://static.smartisanos.cn/index/assets/images/icon-backtop@3x.c979a3d8e2c42cf66a63769745b64e1a.png) 2x);
+      background-size: 36px;
+    }
+    .icon {
+      display: block;
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 5px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .txt {
+      font-size: 13.5px;
+      line-height: 19px;
+      color: rgba(0, 0, 0, 0.5);
     }
   }
 }
