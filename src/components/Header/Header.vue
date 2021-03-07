@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="min-width:1400px" >
     <div class="topbar-container">
       <div class="topbar-logo">
         <img src="../../assets/logo.png" alt="">
@@ -26,12 +26,13 @@
     <div class="topbar-nav" :class="isShowInput?'':'scrollNav'"   @mouseleave="getNavCurrentIndex(-1)" >
       <div class="search-area">
         <ul>
-          <li v-for="(navItem,index) in navData" :key="index" ><a :href="navItem.url" @mouseenter="getNavCurrentIndex(index)">{{navItem.name}}</a></li>
+          <li v-for="(navItem,index) in navData" :key="index" @mouseenter="getNavCurrentIndex(index)" ><router-link class="nav-links" :to="navItem.url" >{{navItem.name}}</router-link></li>
           <li><a href="">服务</a></li>
         </ul>
+        <!-- 搜索区域 -->
         <div class="search-bar" v-show="isShowInput">
-          <div class="search-icon"></div>
-          <input type="text" :placeholder="isSearching?'请输入搜索的商品':''" @focus="changeSearchState(true)" @blur="changeSearchState(false)">
+          <div class="search-icon" @click="search" style="cursor:pointer"></div>
+          <input type="text" v-model="keyword" :placeholder="isSearching?'请输入搜索的商品':''" @focus="changeSearchState(true)" @blur="changeSearchState(false)">
           <el-button type="primary" round plain class="search-btn" v-show="!isSearching" >坚果 R2</el-button>
           <el-button type="success" round plain class="search-btn" v-show="!isSearching">TNT</el-button>
         </div>
@@ -68,7 +69,7 @@
 
       <!-- sub-pannel -->
       <div 
-      class="sub-pannel"  
+      class="sub-pannel"
       v-for="(navItem,index) in navData" 
       :class="{'pannel-active':navCurrentIndex==index,'pannel-enter':navCurrentIndex!=-1}"
       :key="index" >
@@ -111,6 +112,7 @@ export default {
       navCurrentIndex:-1, // 选中的navIndex
       isShowInput:true,// 是否展示搜索框
       isSearching:false, // 是否正在搜索
+      keyword:'', // 搜索的关键词
     }
   },
   async mounted(){
@@ -141,8 +143,22 @@ export default {
     async getNavData(){
       const result = await axios({url:"/v1/cms/second_nav"})
       if(result.status == 200){
-        this.navData = result.data
+        let navData = result.data
+        navData.forEach(item=>{
+          let urlArr = item.url.split('/')
+          if(urlArr[urlArr.length-1]){
+            item.url = '/goodlist/'+urlArr[urlArr.length-1]
+          }else{
+            item.url = '/home'
+          }
+          
+        })
+        this.navData = navData
       }
+    },
+    // 搜索
+    search(){
+      this.$router.push('/search/'+this.keyword)
     }
   }
 }
@@ -230,6 +246,15 @@ export default {
           height: 20px;
           font-size: 14px;
           font-weight: bold;
+          .nav-links{
+            text-decoration: none !important;
+            &:hover{
+              text-decoration: none !important;
+            }
+            &:active{
+              color:#333 !important;
+            }
+          }
           a{
             margin-right: 30px;
           }
@@ -310,9 +335,9 @@ export default {
       height: 0px;
       width: 100%;
       flex-shrink: 0;
-      opacity: 0;
-      z-index: -10;
-      // display: none;
+      // opacity: 0;
+      // z-index: -10;
+      display: none;
       background-color: #fff;
       border-bottom: 1px solid #e1e1e1;
       box-shadow: 0 4px 10px 0 rgb(0 0 0 / 5%);
@@ -321,9 +346,9 @@ export default {
         height: 280px;
       }
       &.pannel-active{
-        opacity: 1;
+        // opacity: 1;
         z-index:10;
-        // display: block;
+        display: block;
       }
       .nav-sub-list{
         width: 100%;
@@ -377,6 +402,7 @@ export default {
         justify-content: center;
         padding-top: 37px;
         height: 222px;
+        background-color: #fff;
         .nav-good-item{
           display: flex;
           flex-direction: column;

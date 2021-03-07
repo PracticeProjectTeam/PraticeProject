@@ -1,0 +1,7 @@
+homeDataList.home_floors.forEach(floor=>{
+  floor.tabs.forEach(tab=>{
+    floor.bigImg = tab.tab_items[0]
+    tab_items.unshift()
+    })
+  })
+})

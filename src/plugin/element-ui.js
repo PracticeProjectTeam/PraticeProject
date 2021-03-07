@@ -4,10 +4,14 @@ import Vue from 'vue';
 import {
   MessageBox,
   Message,
-  Button
+  Button,
+  Checkbox,
+  Radio
 } from 'element-ui'
 
 Vue.use(Button);
+Vue.use(Checkbox);
+Vue.use(Radio);
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
