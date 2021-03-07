@@ -69,6 +69,7 @@ export default {
             border-radius: 10px;
             font-weight: 700;
             border: 1px solid;
+            font-size: 12px;
             &.full-reduction{
               color: #d03b34;
               background: #ffe7e5;
