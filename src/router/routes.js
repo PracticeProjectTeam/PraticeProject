@@ -12,14 +12,25 @@ const Search=()=>import('@/pages/Search/Search.vue')
 // 商品详情页
 const Item=()=>import('@/pages/Item')
 
+const Cart=()=>import('@/pages/Cart/Cart.vue') // 按需加载
+const Showgoods=()=>import('@/pages/Cart/showGoods.vue') // 按需加载
 
 export default [
   // 主页路由
   {
     path:'/home',
     component:Home
-  
   },
+  {
+    path:'/Cart',
+    component:Cart
+  },
+  {
+    path:'/Showgoods',
+    component:Showgoods
+  },
+  
+  
   // 商品列表
   {
     path:'/goodlist/:categoryid',

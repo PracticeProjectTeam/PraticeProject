@@ -11,3 +11,8 @@ export const reqItemInfo = (ids,with_stock,with_spu)=>axios.get(`product/skus?id
 
 // 获取所有促销活动
 export const reqPromotions = (with_num)=>axios.get(`product/promotions?with_num=${with_num}`)
+//获取购物车的列表
+export const reqGetShopCartList = () => axios.get(`/product/skus?ids=100162801,100187101,100052801,100023501,100061001,100060501,100060201,100086802&with_stock=true&with_spu=true`)
+//获取购物车的水平
+export const reqGetShopgoods = () => axios.get(`/product/skus?ids=100187101&with_stock=true&with_spu=true`)
+

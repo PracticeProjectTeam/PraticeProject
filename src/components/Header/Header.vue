@@ -348,6 +348,7 @@ export default {
       &.pannel-active{
         // opacity: 1;
         z-index:10;
+        // z-index:10;
         display: block;
       }
       .nav-sub-list{
