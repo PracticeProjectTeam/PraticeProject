@@ -9,6 +9,8 @@ const Goodlist=()=>import('@/pages/Goodlist/Goodlist.vue')
 const Settlement=()=>import('@/pages/Settlement/Settlement.vue')
 // 搜索结果页
 const Search=()=>import('@/pages/Search/Search.vue')
+// 商品详情页
+const Item=()=>import('@/pages/Item')
 
 
 export default [
@@ -22,6 +24,11 @@ export default [
   {
     path:'/goodlist/:categoryid',
     component:Goodlist
+  },
+  // 商品详情
+  {
+    path:'/item/:ids',
+    component:Item
   },
   // 结算页
   {
