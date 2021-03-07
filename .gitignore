@@ -1,5 +1,23 @@
-#忽略单个文件，可以带路径
-readme.txt
-#忽略所有txt文件
-*.txt
-/node_modules
+.DS_Store
+node_modules
+/dist
+
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
