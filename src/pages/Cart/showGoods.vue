@@ -19,20 +19,23 @@
       <span class="promotion a1">已享满 3000 减 1000 元</span>
     </div>
     <div class="cart-item">
-      <div class="item-content">
-        <div class="checked">
-          <img src="../images/buttom.png" alt="" />
+      <div class="item-content" v-for="(goodsItem,index) in shopgoods" :key="index">
+        <div class="checked"  >
+            <!-- <img src="../images/buttom1.png" alt="" v-if="goodsItem.ischecked">
+            <img src="../images/buttom.png" alt="" v-if="!goodsItem.ischecked" > -->
+            <el-checkbox v-model="goodsItem.ischecked" @change="changeCheckItem(goodsItem)"></el-checkbox>
         </div>
+        
         <div class="items-thumb">
           <div class="http-img">
             <img
-              src="https://resource.smartisan.com/resource/623bad86546352a2035ec704e2faf041.png?x-oss-process=image/resize,w_80"
+               :src="goodsItem.shop_info.ali_image"
               alt=""
             />
           </div>
           <div class="blank">
             <h4 class="phone-type">
-              坚果 R2
+              {{goodsItem.product_info.product_name}}
             </h4>
             <div class="phone-name">
               <span>
@@ -45,22 +48,35 @@
         </div>
         <div class="phone-price">
           <div class="unit-price">
-            <span>¥ 4,299.00</span>
+            <span>¥{{goodsItem.price}}</span>
           </div>
           <div class="butttom-num">
-            <span class="add xy">
-              <img class="add1" src="../images/add.png" alt="" />
+            <span class="add xy"  >
+              <img class="add1" src="../images/add.png" alt="" @click="updateSkuNum(goodsItem, 1)" />
             </span>
-            <span> <input type="text" placeholder="2" class="input"/></span>
-            <span class="reduce xy">
-              <img class="reduce1" src="../images/del.png" alt="" />
+            <span> <input type="text"  class="input" :value="goodsItem.skuNum"
+             @change="
+                    updateSkuNum(
+                      goodsItem,
+                      $event.target.value - goodsItem.skuNum,
+                      $event
+                    )
+                  "
+                  @input="validInput"
+            /></span>
+            <span class="reduce xy" 
+            
+            >
+              <img class="reduce1" src="../images/del.png" alt=""  @click="updateSkuNum(goodsItem, -1)" />
             </span>
           </div>
           <div class="subtotal a1">
-            <span>¥ 8,598.00</span>
+            <span>¥ {{totalPrice}}</span>
           </div>
           <div class="multiply a1">
-            <img src="../images/multiply.png" alt="" />
+            <img src="../images/multiply.png" alt="" 
+            @click="deleteItem(index)"
+            />
           </div>
         </div>
       </div>
@@ -77,8 +93,8 @@
     <div class="total-price">
       <div class="checked">
         <div class="ischecked a1">
-          <img src="../images/buttom.png" alt="" />
-          <span class="check-all a2">全选</span>
+          <el-checkbox v-model="allChecked" @change="checkAll"></el-checkbox>
+          <span class="check-all a2" >全选</span>
           <span class="bar a2">|</span>
           <span class="Delete-content a2">删除选中按钮</span>
         </div>
@@ -86,14 +102,14 @@
       <div class="total-content"></div>
       <div class="settlement">
         <div class="purchase-num">
-          <div class="choose">已选择 <i class="a4">1</i>件商品</div>
-          <div class="total-goods a5">共计 <i>1</i>件商品</div>
+          <div class="choose">已选择 {{ totalCount}} <i class="a4">1</i>件商品</div>
+          <div class="total-goods a5">共计 <i>{{ totalCount}}</i>件商品</div>
         </div>
         <!-- <div>|</div> -->
         <div class="vertical">
           <div class="total-amount">
             应付总额：￥
-            <i class="a4">2,999.00</i>
+            <i class="a4">{{ totalPrice }}</i>
           </div>
           <div class="not-including a5">
             总额节省：￥
@@ -107,10 +123,105 @@
       </div>
     </div>
   </div>
+
 </template>
 <script>
+import {mapGetters, mapState} from 'vuex';
+import vue from 'vue'
+
 export default {
   name: "Header",
+  data(){
+    return{
+      allChecked: false,
+    }
+  },
+  mounted(){
+    this.$store.dispatch('getShopgoods')
+    this.$store.dispatch('delShopgoods')
+    
+  },
+  computed:{
+    ...mapGetters(['totalCount', 'totalPrice']),
+     ...mapState({
+       shopgoods:(state)=>state.shopcart.shopgoods
+     }),
+      
+    
+   },
+  methods:{
+    //修改选中状态
+    changeCheckItem(item){
+      console.log(item);
+      vue.set(item,'ischecked', !item.ischecked);
+      this.allChecked = item.ischecked
+      console.log(item.ischecked);
+    },
+    //全部选中的数量
+    checkAll(){
+        this.shopgoods.forEach(item=>{
+          console.log("====");
+          // vue.set(item,'ischecked',this.allChecked)
+          item.ischecked = this.allChecked
+          this.shopgoods.splice(this.shopgoods.length,0)
+          console.log(item);
+        })
+    },
+    //修改当前商品数量
+     async updateSkuNum(item, changeNum, event){
+           const{skuNum} =item 
+           //判断当前的修改的数据和原先的数据相加是否有意义
+           const targetNum = skuNum + changeNum
+           console.log(targetNum);
+           if(targetNum >0){
+             vue.set(item,'skuNum',targetNum)
+             //分发action
+            //  try {
+            //     await this.$store.dispatch('getShopgoods',{
+            //       id,
+            //       skuNum: changeNum,
+            //     })
+            //  } catch (error) {
+            //   //  this.$message.error(error.message|| '修改数量失败了')
+            //  }
+           }else{
+             if(event){
+               //文本输入框是无效数据，那么失去焦点后恢复到原来的样子
+               event.target.value = item.skuNum
+             }
+           }
+      },
+      // 修改当前商品的数量操作----对应着的文本框的input事件的回调
+    validInput(event) {
+      // 获取文本框的数据
+      const value = event.target.value
+      // 通过正则的方式校验错误的数据后,进行替换成正确的数据,再次赋值给文本框
+      event.target.value = value.replace(/^0+|\D+0*/, '')
+    },
+    deleteItem(index){
+      this.$confirm('您确定要删除当前的商品吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$store
+            .dispatch('delShopgoods', index)
+            .then(() => {
+              this.$message.success('删除成功')
+            })
+            .catch((error) => {
+              this.$message.error(error.message)
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    }
+  }
 };
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
@@ -210,7 +321,7 @@ export default {
   width: 80px;
 }
 .shopping-content .cart-item .items-thumb .blank h4 {
-  margin-bottom: 0;
+  margin-top: 30px;
   margin-left: 15px;
 }
 .shopping-content .cart-item .items-thumb .phone-name {

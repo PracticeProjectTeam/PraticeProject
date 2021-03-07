@@ -6,7 +6,8 @@
           购物清单
         </h2>
       </div>
-      <!-- <div class="shop-cart">
+       <Showgoods/>
+      <!-- <div class="shop-cart" v-else>
         <div class="shopDetail">
           <img src="../images/ia_200000016.png" alt="" />
           <div class="none">您的购物车中还没有商品</div>
@@ -15,213 +16,73 @@
           </div>
         </div>
       </div> -->
-      <Showgoods />
+     
       
-      <div class="recommend">
+       <div class="recommend">
         <div class="shopping">
           <h2>
             相关推荐
           </h2>
         </div>
-        <div class="flex">
-          <div class="Related-recommends">
+        <div class="flex1">
+        <div class="flex ConHover"  v-for="(shopItem) in shopCartList" :key="shopItem.id">
+          <div class="Related-recommends ">
             <div class="Related-content">
               <img
                 class="Related-image"
-                src="../images/ia_100000003715.png"
+                :src="shopItem.shop_info.ali_image"
                 alt=""
               />
               <div class="text-one">
-                坚果 QuickCharge 4+ 快速充电器
+                {{shopItem.product_info.product_name}}
               </div>
-              <div class="text-two">全面兼容的 18W 快速充电</div>
+              <div class="text-two"> {{shopItem.shop_info.sku_mobile_sub_title}}</div>
               <img
                 class="Related-image-one"
                 src="../images/ia_200000002.jpg"
                 alt=""
               />
-              <div class="price">￥199.00</div>
+              <div class="price">￥{{shopItem.price}}</div>
               <div class="whole-link">
                 <a href="#" class="check-detail">查看详情</a>
                 <a href="#" class="sell-out">加入购物车</a>
               </div>
             </div>
           </div>
-          <div class="Related-recommends">
-            <div class="Related-content">
-              <img
-                class="Related-image"
-                src="../images/ia_100000003715.png"
-                alt=""
-              />
-              <div class="text-one">
-                坚果 QuickCharge 4+ 快速充电器
-              </div>
-              <div class="text-two">全面兼容的 18W 快速充电</div>
-              <img
-                class="Related-image-one"
-                src="../images/ia_200000002.jpg"
-                alt=""
-              />
-              <div class="price">￥199.00</div>
-              <div class="whole-link">
-                <a href="#" class="check-detail">查看详情</a>
-                <a href="#" class="sell-out">加入购物车</a>
-              </div>
-            </div>
-          </div>
-          <div class="Related-recommends">
-            <div class="Related-content">
-              <img
-                class="Related-image"
-                src="../images/ia_100000003715.png"
-                alt=""
-              />
-              <div class="text-one">
-                坚果 QuickCharge 4+ 快速充电器
-              </div>
-              <div class="text-two">全面兼容的 18W 快速充电</div>
-              <img
-                class="Related-image-one"
-                src="../images/ia_200000002.jpg"
-                alt=""
-              />
-              <div class="price">￥199.00</div>
-              <div class="whole-link">
-                <a href="#" class="check-detail">查看详情</a>
-                <a href="#" class="sell-out">加入购物车</a>
-              </div>
-            </div>
-          </div>
-          <div class="Related-recommends">
-            <div class="Related-content">
-              <img
-                class="Related-image"
-                src="../images/ia_100000003715.png"
-                alt=""
-              />
-              <div class="text-one">
-                坚果 QuickCharge 4+ 快速充电器
-              </div>
-              <div class="text-two">全面兼容的 18W 快速充电</div>
-              <img
-                class="Related-image-one"
-                src="../images/ia_200000002.jpg"
-                alt=""
-              />
-              <div class="price">￥199.00</div>
-              <div class="whole-link">
-                <a href="#" class="check-detail">查看详情</a>
-                <a href="#" class="sell-out">加入购物车</a>
-              </div>
-            </div>
-          </div>
+         
         </div>
-        <div class="flex">
-          <div class="Related-recommends">
-            <div class="Related-content">
-              <img
-                class="Related-image"
-                src="../images/ia_100000003715.png"
-                alt=""
-              />
-              <div class="text-one">
-                坚果 QuickCharge 4+ 快速充电器
-              </div>
-              <div class="text-two">全面兼容的 18W 快速充电</div>
-              <img
-                class="Related-image-one"
-                src="../images/ia_200000002.jpg"
-                alt=""
-              />
-              <div class="price">￥199.00</div>
-              <div class="whole-link">
-                <a href="#" class="check-detail">查看详情</a>
-                <a href="#" class="sell-out">加入购物车</a>
-              </div>
-            </div>
-          </div>
-          <div class="Related-recommends">
-            <div class="Related-content">
-              <img
-                class="Related-image"
-                src="../images/ia_100000003715.png"
-                alt=""
-              />
-              <div class="text-one">
-                坚果 QuickCharge 4+ 快速充电器
-              </div>
-              <div class="text-two">全面兼容的 18W 快速充电</div>
-              <img
-                class="Related-image-one"
-                src="../images/ia_200000002.jpg"
-                alt=""
-              />
-              <div class="price">￥199.00</div>
-              <div class="whole-link">
-                <a href="#" class="check-detail">查看详情</a>
-                <a href="#" class="sell-out">加入购物车</a>
-              </div>
-            </div>
-          </div>
-          <div class="Related-recommends">
-            <div class="Related-content">
-              <img
-                class="Related-image"
-                src="../images/ia_100000003715.png"
-                alt=""
-              />
-              <div class="text-one">
-                坚果 QuickCharge 4+ 快速充电器
-              </div>
-              <div class="text-two">全面兼容的 18W 快速充电</div>
-              <img
-                class="Related-image-one"
-                src="../images/ia_200000002.jpg"
-                alt=""
-              />
-              <div class="price">￥199.00</div>
-              <div class="whole-link">
-                <a href="#" class="check-detail">查看详情</a>
-                <!-- <a href="#" class="sell-out">加入购物车</a> -->
-              </div>
-            </div>
-          </div>
-          <div class="Related-recommends">
-            <div class="Related-content">
-              <img
-                class="Related-image"
-                src="../images/ia_100000003715.png"
-                alt=""
-              />
-              <div class="text-one">
-                坚果 QuickCharge 4+ 快速充电器
-              </div>
-              <div class="text-two">全面兼容的 18W 快速充电</div>
-              <img
-                class="Related-image-one"
-                src="../images/ia_200000002.jpg"
-                alt=""
-              />
-              <div class="price">￥199.00</div>
-              <div class="whole-link">
-                <a href="#" class="check-detail">查看详情</a>
-                <a href="#" class="sell-out">加入购物车</a>
-              </div>
-            </div>
-          </div>
-        </div>
+        
+      </div>
+
+
+      </div>
+
+
       </div>
     </div>
-  </div>
+
 </template>
 <script>
 import Showgoods from './showGoods'
+// 引入axios
+// import axios from '@/api/ajax'
+import {mapState} from 'vuex';
 export default {
   name: 'Cart',
    components: {
        Showgoods
+   },
+  mounted(){
+    this.$store.dispatch('getShopCartList')
+  },
+  computed:{
+     ...mapState({
+       shopCartList:(state)=>state.shopcart.shopCartList
+     }),
+   
    }
+
+
 }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
@@ -372,23 +233,26 @@ export default {
 }
 
 .recommend {
-  // height: 600px;
+   height: 900px;
   border: 1px solid red;
-}
-.flex {
   background-color: #fff;
-  display: flex;
+}
+.flex1 .flex {
+  
+  float: left;
+   height: 400px;
 }
 .flex .Related-recommends {
   width: 300px;
-  height: 430px;
+  // height: 430px;
   // border: 1px solid rebeccapurple;
   text-align: center;
+  border: 1px solid #e5e5e5
 }
 .Related-recommends .Related-content .Related-image {
   width: 216px;
   height: 216px;
-  padding: 45px 0 20px;
+  // padding: 45px 0 20px;
   // border: 1px solid rebeccapurple;
 }
 .Related-recommends .Related-content .text-one {
@@ -397,6 +261,8 @@ export default {
   color: #333;
   font-weight: 700;
   margin: 0 24px;
+  overflow:hidden; /*超出的部分隐藏起来。*/ 
+  white-space:nowrap;/*不显示的地方用省略号...代替*/
 }
 .Related-recommends .Related-content .text-two {
   padding: 15px 24px 0;
@@ -405,6 +271,8 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   color: #999;
+  overflow:hidden; /*超出的部分隐藏起来。*/ 
+  white-space:nowrap;/*不显示的地方用省略号...代替*/
 }
 .Related-recommends .Related-content .Related-image-one {
   width: 8px;
@@ -422,27 +290,22 @@ export default {
   color: #d44d44;
   font-weight: 700;
   margin-top: 15px;
+  margin-bottom: 130px;
   text-align: center;
   transition: all 0.1s ease-out;
   // position: relative;
 }
-.whole-link {
+.Related-recommends .Related-content .whole-link {
   // position: absolute;
   margin-top: 20px;
   margin-left: 5px;
-
   display: none;
-  // width:100%;
-  // height: 100%;
-  // left:0;
-  // top:0;
-  // box-shadow: 0 0 35px #ddd inset;
 }
 
-.Related-content:hover .whole-link {
+.ConHover:hover  .whole-link{
   display: block;
 }
-.Related-content:hover .price {
+.ConHover:hover .price {
   display: none;
 }
 .whole-link .check-detail {

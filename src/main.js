@@ -7,10 +7,14 @@ import router from '@/router/index.js'
 // 引入swiper
 import '@/plugin/swiper.js'
 // 引入element-ui
+import ElementUI from 'element-ui'
+
 import '@/plugin/element-ui.js'
 
-Vue.config.productionTip = false
+import 'element-ui/lib/theme-chalk/index.css'
 
+Vue.config.productionTip = false
+Vue.use(ElementUI)
 new Vue({
   render: h => h(App),
   store,
