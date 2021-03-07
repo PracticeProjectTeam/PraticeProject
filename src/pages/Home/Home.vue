@@ -24,6 +24,9 @@ export default {
     Recommend,
     Forum
   },
+  mounted(){
+    this.$store.dispatch('getHomeDataList')
+  }
 };
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
