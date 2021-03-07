@@ -2,11 +2,11 @@
 import axios from './ajax'
 
 
-// 根据id获取商品spu
+// 根据id获取spu规格
 export const reqSpus = (ids)=>axios.get(`/product/spus?ids=${ids}`)
 
-// 获取商品信息的api接口函数
-export const reqItemInfo = (ids,with_stock,with_spu)=>axios.get(`product/skus?ids=${ids}&with_stock=${with_stock}&with_spu=${with_spu}`)
+// 获取商品详情信息的api接口函数
+export const reqDetailInfo = (ids,with_stock,with_spu)=>axios.get(`product/skus?ids=${ids}&with_stock=${with_stock}&with_spu=${with_spu}`)
 
 
 // 获取所有促销活动
