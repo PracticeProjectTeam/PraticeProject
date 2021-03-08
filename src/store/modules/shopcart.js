@@ -11,6 +11,7 @@ import {
 const state = {
     shopCartList: [],
     shopgoods: [],
+
 }
 const mutations = {
     [GETSHOPCARTLIST](state, shopCartList) {
@@ -53,9 +54,12 @@ const actions = {
 
     },
     async delShopgoods(index){
-        console.log(state.shopgoods);
+       
         state.shopgoods.splice(index,1);
-    }
+    },
+  
+   
+  
 }
 const getters = {
     //计算购物项的总价格(选中的)
@@ -65,7 +69,10 @@ const getters = {
             if (goodsItem.isChecked) {
                 //   return preTotal + goodsItem.skuNum * goodsItem.price
                 return goodsItem.skuNum
+            }else{
+                return goodsItem.skuNum
             }
+            
             //   return preTotal+goodsItem.reduce((pre,item)=>pre+(item.isChecked===true?item.skuNum*item.skuPrice:0),0)
         }, 0)
     },
