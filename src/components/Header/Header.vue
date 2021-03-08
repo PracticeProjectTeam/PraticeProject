@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width:1400px" v-if="$route.meta!='login'" >
+  <div style="min-width:1400px" v-show="$route.meta!='login'" >
     <div class="topbar-container">
       <div class="topbar-logo">
         <img src="../../assets/logo.png" alt="">
@@ -183,7 +183,6 @@ export default {
       keyword:'', // 搜索的关键词
       isShowProfile:false, // 是否显示用户资料卡
       isShowBarProfile:false, // 是否显示用户资料卡
-      isLogin:false
     }
   },
   async mounted(){
@@ -197,6 +196,8 @@ export default {
     // 监听系统滚动条高度
     document.addEventListener("scroll",()=>{
       this.navCurrentIndex = -1
+      this.isShowProfile = false
+      this.isShowBarProfile = false
       let scrollTop = document.documentElement.scrollTop
       if(scrollTop>45){
         this.isShowInput = false
@@ -210,6 +211,16 @@ export default {
       handler(){
         this.navCurrentIndex = -1
       }
+    }
+  },
+  computed:{
+    isLogin:{
+      get(){
+        return localStorage.getItem("UID")
+      },
+      set(){
+      }
+      
     }
   },
   methods:{
@@ -261,7 +272,9 @@ export default {
     // 退出登录
     logOut(){
       localStorage.removeItem("UID")
-      this.$router.push('/home')
+      this.isShowProfile = false
+      this.isShowBarProfile = false
+      this.$router.push('/')
     }
   }
 }

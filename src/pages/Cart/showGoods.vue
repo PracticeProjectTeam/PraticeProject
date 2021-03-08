@@ -21,38 +21,38 @@
     <div class="cart-item">
       <div
         class="item-content"
-        v-for="(goodsItem, index) in shopgoods"
+        v-for="(goodsItem, index) in cartList"
         :key="index"
       >
         <div class="checked">
           <!-- <img src="../images/buttom1.png" alt="" v-if="goodsItem.ischecked">
             <img src="../images/buttom.png" alt="" v-if="!goodsItem.ischecked" > -->
           <el-checkbox
-            v-model="goodsItem.ischecked"
+            v-model="goodsItem.isSelected"
             @change="changeCheckItem(goodsItem)"
           ></el-checkbox>
         </div>
 
         <div class="items-thumb">
           <div class="http-img">
-            <img :src="goodsItem.shop_info.ali_image" alt="" />
+            <img :src="goodInfoList[index]?goodInfoList[index].shop_info.ali_image:''" alt="" />
           </div>
-          <div class="blank">
+          <div class="blank" v-if="goodInfoList[index]">
             <h4 class="phone-type">
-              {{ goodsItem.product_info.product_name }}
+              {{goodInfoList[index].name}}
             </h4>
             <div class="phone-name">
               <span>
-                松绿色
+                {{goodInfoList[index].shop_info.spec_json[0].show_name}}
               </span>
               <span>|</span>
-              <span>8G + 256GB</span>
+              <span>{{goodInfoList[index].shop_info.spec_json[1].show_name}}</span>
             </div>
           </div>
         </div>
-        <div class="phone-price">
+        <div class="phone-price" v-if="goodInfoList[index]">
           <div class="unit-price">
-            <span>¥{{ goodsItem.price }}</span>
+            <span>¥{{ goodInfoList[index].price }}</span>
           </div>
           <div class="butttom-num">
             <span class="add xy">
@@ -67,11 +67,11 @@
               <input
                 type="text"
                 class="input"
-                :value="goodsItem.skuNum"
+                :value="goodsItem.count"
                 @change="
                   updateSkuNum(
                     goodsItem,
-                    $event.target.value - goodsItem.skuNum,
+                    $event.target.value - goodsItem.count,
                     $event
                   )
                 "
@@ -87,7 +87,7 @@
             </span>
           </div>
           <div class="subtotal a1">
-            <span>¥ {{ totalPrice }}</span>
+            <span>¥ {{ goodInfoList[index].price* goodsItem.count}}</span>
           </div>
           <div class="multiply a1">
             <img
@@ -145,7 +145,7 @@
     <div class="total-price">
       <div class="checked">
         <div class="ischecked a1">
-          <el-checkbox v-model="allChecked" @change="checkAll"></el-checkbox>
+          <el-checkbox v-model="isAllSelected"></el-checkbox>
           <span class="check-all a2">全选</span>
           <span class="bar a2">|</span>
           <span class="Delete-content a2" @click="deletecheked(index)"
@@ -189,10 +189,9 @@ import { mapGetters, mapState } from "vuex";
 import vue from "vue";
 
 export default {
-  name: "Header",
+  name: "ShowGoods",
   data() {
     return {
-      allChecked: false,
       centerDialogVisible: false,
       color1: "#409EFF",
     };
@@ -200,61 +199,65 @@ export default {
   mounted() {
     //mine
     this.$store.dispatch("getCartList",localStorage.getItem("UID"))
-    //
-    this.$store.dispatch("getShopgoods");
-    this.$store.dispatch("delShopgoods");
   },
   computed: {
     ...mapGetters(["totalCount", "totalPrice"]),
     ...mapState({
-      shopgoods: (state) => state.shopcart.shopgoods,
+      cartList:state=>state.cart.cartList,
+      goodInfoList:state=>state.cart.goodInfoList
     }),
+    // 监听是否全选
+    isAllSelected:{
+      get(){
+        return this.cartList.every(item=>item.isSelected)
+      },
+      async set(val){
+        this.cartList.forEach((item) => {
+        item.isSelected = val;
+      });
+      // 请求修改数据
+      await this.$API.reqChangeCart(localStorage.getItem("UID"),this.cartList)
+      // 修改成功后弹窗
+      this.$message.success("修改成功！")
+      // 重新获取页面数据
+      this.$store.dispatch("getCartList",localStorage.getItem("UID"))
+      }
+    }
   },
+  
+
   methods: {
     //对话框内容
-   
     //全选按钮
     deletecheked(index) {
       this.$store.dispatch("delShopgoods", index);
     },
     //修改选中状态
-    changeCheckItem(item) {
-      console.log(item);
-      vue.set(item, "ischecked", !item.ischecked);
-      this.allChecked = item.ischecked;
-      console.log(item.ischecked);
-    },
-    //全部选中的数量
-    checkAll() {
-      this.shopgoods.forEach((item) => {
-        console.log("====");
-        // vue.set(item,'ischecked',this.allChecked)
-        item.ischecked = this.allChecked;
-        this.shopgoods.splice(this.shopgoods.length, 0);
-        console.log(item);
-      });
+    async changeCheckItem(item) {
+      // 请求修改数据
+      await this.$API.reqChangeCart(localStorage.getItem("UID"),this.cartList)
+      // 修改成功后弹窗
+      this.$message.success("修改成功！")
+      // 重新获取页面数据
+      this.$store.dispatch("getCartList",localStorage.getItem("UID"))
     },
     //修改当前商品数量
     async updateSkuNum(item, changeNum, event) {
-      const { skuNum } = item;
+      const { count } = item;
       //判断当前的修改的数据和原先的数据相加是否有意义
-      const targetNum = skuNum + changeNum;
-      console.log(targetNum);
+      const targetNum = count + changeNum;
       if (targetNum > 0) {
-        vue.set(item, "skuNum", targetNum);
-        //分发action
-        //  try {
-        //     await this.$store.dispatch('getShopgoods',{
-        //       id,
-        //       skuNum: changeNum,
-        //     })
-        //  } catch (error) {
-        //   //  this.$message.error(error.message|| '修改数量失败了')
-        //  }
+        vue.set(item, "count", targetNum);
+        // 请求修改数据
+        await this.$API.reqChangeCart(localStorage.getItem("UID"),this.cartList)
+        // 修改成功后弹窗
+        this.$message.success("修改成功！")
+        // 重新获取页面数据
+        this.$store.dispatch("getCartList",localStorage.getItem("UID"))
       } else {
         if (event) {
           //文本输入框是无效数据，那么失去焦点后恢复到原来的样子
-          event.target.value = item.skuNum;
+          event.target.value = item.count;
         }
       }
     },
@@ -265,6 +268,7 @@ export default {
       // 通过正则的方式校验错误的数据后,进行替换成正确的数据,再次赋值给文本框
       event.target.value = value.replace(/^0+|\D+0*/, "");
     },
+    // 删除商品项
     deleteItem(index) {
       this.$confirm("您确定要删除当前的商品吗?", "提示", {
         confirmButtonText: "确定",
@@ -272,10 +276,13 @@ export default {
         type: "warning",
       })
         .then(() => {
-          this.$store
-            .dispatch("delShopgoods", index)
+          this.cartList.splice(index)
+            // 请求修改数据
+            this.$API.reqChangeCart(localStorage.getItem("UID"),this.cartList)
             .then(() => {
               this.$message.success("删除成功");
+              // 重新获取页面数据
+              this.$store.dispatch("getCartList",localStorage.getItem("UID"))
             })
             .catch((error) => {
               this.$message.error(error.message || "删除失败");
@@ -478,8 +485,8 @@ export default {
   top: 12px;
 }
 .shopping-content .cart-item .phone-price .input {
-  width: 10px;
-  height: 10px;
+  width: 16px;
+  height: 12px;
   border: none;
 }
 .shopping-content .a1 {

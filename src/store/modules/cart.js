@@ -46,7 +46,29 @@ const actions = {
   }
 }
 const getters = {
-  
+   //计算购物项的总数(选中的)
+   totalCount(state) {
+    return state.cartList.reduce((preTotal, goodsItem) => {
+        if (goodsItem.isSelected) {
+            //   return preTotal + goodsItem.skuNum * goodsItem.price
+            return preTotal + goodsItem.count
+        }else{
+            return preTotal
+        }
+        
+        //   return preTotal+goodsItem.reduce((pre,item)=>pre+(item.isChecked===true?item.skuNum*item.skuPrice:0),0)
+    }, 0)
+},
+//   //计算购物项的总价格(选中)
+totalPrice() {
+    return state.cartList.reduce((preTotal, goodsItem,index) => {
+        if (goodsItem.isSelected) {
+            return preTotal + goodsItem.count * state.goodInfoList[index].price
+        }else{
+            return preTotal
+        }
+    }, 0)
+},
 }
 
 // 导出模块

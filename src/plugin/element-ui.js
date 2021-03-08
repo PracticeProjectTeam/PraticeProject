@@ -10,16 +10,21 @@ import {
   Select,
   Option,
   Input,
-  Dialog
+  Dialog,
+  Form,
+  Switch,
+  FormItem,
 } from 'element-ui'
 Vue.use(Dialog);
-
 Vue.use(Button);
 Vue.use(Checkbox);
 Vue.use(Radio);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Input);
+Vue.use(Form);
+Vue.use(Switch);
+Vue.use(FormItem);
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;

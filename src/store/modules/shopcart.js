@@ -38,17 +38,12 @@ const actions = {
     }) {
 
         const result = await reqGetShopgoods()
-        console.log(result.data.data);
             let shopCartList = result.data.data.list
-            console.log("====");
-            console.log(shopCartList);
             shopCartList.forEach(item => {
                 // item.skuNum =1
                 vue.set(item, 'skuNum', 1)
                 vue.set(item, 'isChecked', false)
             });
-            console.log("@@@");
-            console.log(shopCartList)
             commit(SHOPGOODS, shopCartList)
 
 
@@ -63,31 +58,28 @@ const actions = {
 }
 const getters = {
     //计算购物项的总价格(选中的)
-    totalCount(state) {
-        return state.shopgoods.reduce((preTotal, goodsItem) => {
-            console.log(preTotal, goodsItem);
-            if (goodsItem.isChecked) {
-                //   return preTotal + goodsItem.skuNum * goodsItem.price
-                return goodsItem.skuNum
-            }else{
-                return goodsItem.skuNum
-            }
+    // totalCount(state) {
+    //     return state.shopgoods.reduce((preTotal, goodsItem) => {
+    //         if (goodsItem.isChecked) {
+    //             //   return preTotal + goodsItem.skuNum * goodsItem.price
+    //             return goodsItem.skuNum
+    //         }else{
+    //             return goodsItem.skuNum
+    //         }
             
-            //   return preTotal+goodsItem.reduce((pre,item)=>pre+(item.isChecked===true?item.skuNum*item.skuPrice:0),0)
-        }, 0)
-    },
-    //   //计算购物项的总价格(选中)
-    totalPrice() {
-        return state.shopgoods.reduce((preTotal, goodsItem) => {
-            if (goodsItem.isChecked) {
-                console.log("+++");
-                console.log(preTotal + goodsItem.skuNum * goodsItem.price);
-                return preTotal + goodsItem.skuNum * goodsItem.price
-            }else{
-                return goodsItem.skuNum * goodsItem.price
-            }
-        }, 0)
-    },
+    //         //   return preTotal+goodsItem.reduce((pre,item)=>pre+(item.isChecked===true?item.skuNum*item.skuPrice:0),0)
+    //     }, 0)
+    // },
+    // //   //计算购物项的总价格(选中)
+    // totalPrice() {
+    //     return state.shopgoods.reduce((preTotal, goodsItem) => {
+    //         if (goodsItem.isChecked) {
+    //             return preTotal + goodsItem.skuNum * goodsItem.price
+    //         }else{
+    //             return goodsItem.skuNum * goodsItem.price
+    //         }
+    //     }, 0)
+    // },
 
     //   //计算购物项是否全选的状态
     //   isAllChecked(state,getters){

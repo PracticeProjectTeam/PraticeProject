@@ -47,6 +47,12 @@ export const reqGetGoodInfoList = (ids) => ajax.get(`/product/skus?ids=${ids}&wi
 
 
 // 结算页提交
-
+export const reqChangeOrder =(userId,orderList)=>axios({
+  method:"patch",
+  url:`http://localhost:3000/userOrder/${userId}`,//ID
+  data:{
+    orderList: orderList//要修改成什么
+  }
+})
 
 

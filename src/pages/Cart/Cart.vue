@@ -73,6 +73,8 @@ export default {
        Showgoods
    },
   mounted(){
+    //mine
+    this.$store.dispatch("getCartList",localStorage.getItem("UID"))
     this.$store.dispatch('getShopCartList')
   },
   computed:{

@@ -12,13 +12,13 @@
           <div class="receive-message-phone">{{item.phone}}</div>
           <div class="receive-message-address">{{item.address}}</div>
           <div class="address-options">
-            <div class="add-btn">修改</div>
+            <div class="add-btn" >修改</div>
             <div class="delete-btn">删除</div>
           </div>
         </div>
         <div class="receive-message-box plus-box">
           <p class="add-icon">+</p>
-          <div class="plus-address">使用新地址</div>
+          <div class="plus-address" @click="addUserAddress">使用新地址</div>
         </div>
       </div>
     </div>
@@ -82,6 +82,7 @@
         </p>
         <p>发票内容：购买商品明细</p>
         <p class="invoice-tag">电子发票是税务局认可的有效付款凭证，可作为售后服务凭据，电子发票打印后可以用于企业报销。</p>
+        
       </div>
     </div>
   </div>
@@ -103,13 +104,12 @@ export default {
     ...mapState({
       addressList:state=>state.user.userAddress.addressList,
       cartList:state=>state.cart.cartList,
-      goodInfoList:state=>state.cart.goodInfoList,
+      goodInfoList:state=>state.cart.goodInfoList
 
     })
   },
   mounted(){
     this.$store.dispatch('getUserAddress',localStorage.getItem("UID"))
-
     this.$store.dispatch("getCartList",localStorage.getItem("UID"))
     
     
@@ -123,6 +123,15 @@ export default {
     // }
     checked(){
       return 0
+    },
+    addUserAddress(){
+        this.$alert(`
+        <input type="text" placeholder="收货人姓名">
+        <input type="text" placeholder="手机号">
+        <input type="text" placeholder="区号可选">`, '管理收货地址', {
+          dangerouslyUseHTMLString: true
+        });
+      
     }
   }
 }

@@ -286,7 +286,14 @@ export default {
       let userId = localStorage.getItem("UID")
       const result = await this.$API.reqUserShopCart(userId)
       let cartList = result.data[0].cartList
-      cartList.push(item)
+      let haveBuyGood = cartList.find(cartItem=>{
+        return cartItem.skuId===item.skuId
+      })
+      if(haveBuyGood){
+        haveBuyGood.count = haveBuyGood.count+1
+      }else{
+        cartList.push(item)
+      }
 
       const result2 = await this.$API.reqChangeCart(userId,cartList)
       if(result2.status == 200) {
