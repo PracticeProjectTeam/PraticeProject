@@ -72,7 +72,7 @@
               <div class="item-spec">
                 <span class="spec-title">{{attr.spec_name}}选择</span>
                 <ul class="spec-info">
-                  <li :class="[value.isChecked?'active':'']" v-for="(value) in attr.spec_values" :key="value.id" @click="setVal(value,attr.spec_values,index)">
+                  <li class="normal" :class="[value.isChecked?'active':'', AllspecV2Json[index+1][index2+1]&&!value.isChecked&&index!=0?'disabled':'']"  v-for="(value,index2) in attr.spec_values" :key="value.id" @click="setVal(value,attr.spec_values,index)">
                     <aside class="spec-item item-inline">
                       <h1 class="item-name">{{value.item_value}}</h1>
                     </aside>
@@ -155,12 +155,12 @@
           <h1 class="bar-text">您已选择了</h1>
           <div class="bar-device-info">
             <h1 class="clearfix">
-              <span class="title">Smartisan 真无线蓝牙耳机 Pro × 1 </span>
+              <span class="title">{{skuInfo.title}}</span>
             </h1>
-            <h2>白色</h2>
+            <h2>{{skuInfo.color}}</h2>
           </div>
-          <div v-if="skuInfo.stock&&skuInfo.in_stock" class="bar-btn">
-            <a @click="addToCart">加入购物车</a>
+          <div @click="addToCart" v-if="skuInfo.stock&&skuInfo.in_stock" class="bar-btn">
+            <a>加入购物车</a>
           </div>
           <div :class="[skuInfo.stock>0&&skuInfo.in_stock?'white-btn':'disabled notice','bar-btn']">
             <a v-if="skuInfo.stock&&skuInfo.in_stock">现在购买</a>
@@ -169,7 +169,7 @@
           <div class="no-discount-price">
             <div class="bar-price">
               <i>￥</i>
-              <span>129.00</span>
+              <span>{{skuInfo.price}}</span>
             </div>
           </div>
 
@@ -204,9 +204,13 @@ export default {
       specs: [], //可选择的销售属性
       isActive: false,
       isStocks: [],
+      // load:{}
     };
   },
   mounted() {
+    this.load = this.$loading.service({text:'加载中'})
+
+    
   },
   updated() {
     let wrapperHeight = document.querySelector(".wrapper").clientHeight;
@@ -220,6 +224,7 @@ export default {
         this.footer = true;
       }
     });
+    this.load.close()
   },
   methods: {
     // 选择缩略图
@@ -228,12 +233,13 @@ export default {
     },
 
     // 获取所有的sku_info
-    async getSkuInfo(ids) {
-      const result = await this.$API.reqSpus(ids);
-      if (result.status === 200) {
-        this.skuInfos = result.data.data.list[0].sku_info;
-      }
-    },
+    // async getSkuInfo(ids) {
+    //   const result = await this.$API.reqSpus(ids);
+    //   if (result.status === 200) {
+    //     this.skuInfos = result.data.data.list[0].sku_info;
+    //     this.load.close()
+    //   }
+    // },
 
     // 点击属性值，修改选中项，同时发送请求获取属性值对应的商品
     setVal(val, attr, index) {
@@ -626,12 +632,28 @@ html {
                 }
               }
             }
+             & > li.normal {
+              float: left;
+              border: 1px solid red;
+              border-radius: 7px;
+              cursor: pointer;
+              transition: box-shadow .15s linear;
+              margin-right: 10px;
+              margin-bottom: 10px;
+            }
             & > li.active {
               color: #999;
               border: 1px solid #6a8fe6;
               transition: none;
               box-shadow: none;
             }
+
+            & > li.disabled {
+              cursor: not-allowed;
+              border: 1px dotted #e5e5e5;
+            }
+
+           
           }
         }
       }

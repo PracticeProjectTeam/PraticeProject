@@ -48,12 +48,12 @@ const getters = {
   specV2Json(state) {
     let specV2Json = []
     let spu = state.detailInfo.spu
-    if(spu) {
+    if (spu) {
       let skuInfos = spu.sku_info
-      skuInfos.forEach(item=>{
+      skuInfos.forEach(item => {
         let temp = []
         let skuId = item.sku_id
-        item.spec_json.forEach(item2=>{
+        item.spec_json.forEach(item2 => {
           temp.push(item2.spec_value_id)
         })
         let json = temp.join('|')
@@ -66,55 +66,109 @@ const getters = {
 
   },
 
-  // 所有销售属性对应的json
+  // 所有销售属性是否有库存对应的对象
   AllspecV2Json(state) {
-    let arr = []
+    let obj = {}
     let shop_info = state.detailInfo.shop_info
-    
-    if(shop_info) {
-      let specV2 = state.detailInfo.shop_info.spec_v2+
-      specV2.forEach((item,index)=>{
-        item.spec_values.forEach(item2=>{
+    if (shop_info) {
+      let specV2 = state.detailInfo.shop_info.spec_v2
+      console.log(specV2)
+      specV2.forEach((item, index) => {
+        item.spec_values.forEach(item2 => {
           let id1 = item2.id
-            if(specV2[index+1]){
-              specV2[index+1].spec_values.forEach(item3=>{
-                let id2 = item3.id
-                let str = id1+'|'+id2
-                arr.push(str)
-              })
-            }
-  
+          obj[id1] = []
+          if ((specV2[index + 1])) {
+            specV2[index + 1].spec_values.forEach(item3 => {
+              let id2 = item3.id
+              obj[id1].push(id2)
+            })
+          }
         })
       })
     }
+    Object.keys(obj).forEach(item => {
+      if (obj[item].length == 0) {
+        delete obj[item]
+      }
+    })
+    console.log(obj)
+
+    let obj2 = {}
+    let spu = state.detailInfo.spu
+    if (spu) {
+      let skuInfos = spu.sku_info
+      skuInfos.forEach(item=>{
+        item.spec_json.forEach((item2,index)=>{
+          if(!obj2[item2.spec_value_id]) {
+            obj2[item2.spec_value_id] = []
+            if(item.spec_json[index+1]) {
+              let id2 = item.spec_json[index+1].spec_value_id
+              obj2[item2.spec_value_id].push(id2)
+            }
+          }else {
+            if(item.spec_json[index+1]) {
+              let id2 = item.spec_json[index+1].spec_value_id
+              obj2[item2.spec_value_id].push(id2)
+            }
+          }
+        })
+      })
+
+      Object.keys(obj2).forEach(item => {
+        if (obj2[item].length == 0) {
+          delete obj2[item]
+        }
+      })
+      console.log(obj2)
+    }
     
-    return arr
+    // 是否有库存的数组
+    let isStocks = []
+    let length = Object.keys(obj).length
+    console.log(length)
+    for (const key in obj) {
+      let temp = []
+      obj[key].forEach((item)=>{
+        if(obj2[key]) {
+          let arr = obj2[key]
+          if(arr.includes(item)) {
+            temp.push(true)
+          }else {
+            temp.push(false)
+          }
+        }
+      })
+      isStocks.push(temp)
+    }
+    console.log(isStocks)
+    return isStocks
   },
+
   // 销售属性值对应产品id的键值对数据
   // 销售属性值数组
   specV2(state) {
     let shop_info = state.detailInfo.shop_info
     let attrInfo = state.detailInfo.attr_info
     let spu = state.detailInfo.spu
-    
+
     if (shop_info && attrInfo && spu) {
-     
+
       let attr = JSON.parse(JSON.stringify(attrInfo))
       let keys = Object.keys(attr)
       let specV2 = shop_info.spec_v2
       let skuInfoWithStock = spu.sku_info
-      
+
 
       // 新建一个数组来存储有效的销售属性值
       let spec = {}
-      skuInfoWithStock.forEach(item=>{
-        item.spec_json.forEach(item2=>{
+      skuInfoWithStock.forEach(item => {
+        item.spec_json.forEach(item2 => {
           let id = String(item2.spec_id)
-          if(Object.prototype.hasOwnProperty.call(spec,id)) {
+          if (Object.prototype.hasOwnProperty.call(spec, id)) {
 
             let valueIds = spec[id]
             let valueId = item2.spec_value_id
-            if(!valueIds.includes(valueId)) {
+            if (!valueIds.includes(valueId)) {
               valueIds.push(valueId)
             }
           } else {
@@ -122,53 +176,53 @@ const getters = {
           }
         })
       })
-     // console.log(spec)
+      // console.log(spec)
       // console.log(skuInfoWithStock)
       // console.log(attr)
       // console.log(keys)
       // console.log(specV2)
 
       // 给选中的销售属性加上一个isChecked=true，否则为false
-      specV2.forEach(item=>{
-        keys.forEach(item2=>{
-            if(item.spec_id == item2) {
-              item.spec_values.forEach(item3=>{
-                // console.log(item3.id,attr[item2].spec_value_id)
-                if(item3.id == attr[item2].spec_value_id) {
-                  Vue.set(item3,'isChecked',true)
-                  // item3.isChecked = true
-                }else {
-                  Vue.set(item3,'isChecked',false)
-                  // item3.isChecked = false
-                }
-              })
-            }
+      specV2.forEach(item => {
+        keys.forEach(item2 => {
+          if (item.spec_id == item2) {
+            item.spec_values.forEach(item3 => {
+              // console.log(item3.id,attr[item2].spec_value_id)
+              if (item3.id == attr[item2].spec_value_id) {
+                Vue.set(item3, 'isChecked', true)
+                // item3.isChecked = true
+              } else {
+                Vue.set(item3, 'isChecked', false)
+                // item3.isChecked = false
+              }
+            })
+          }
         })
       })
 
 
       // 给有库存的销售属性加上一个isStock=true，否则为false
       let keys2 = Object.keys(spec)
-      specV2.forEach(item=>{
-        keys2.forEach(item2=>{
-          if(item.spec_id == item2) {
-            item.spec_values.forEach(item3=>{
-              if(spec[item2].includes(item3.id)) {
+      specV2.forEach(item => {
+        keys2.forEach(item2 => {
+          if (item.spec_id == item2) {
+            item.spec_values.forEach(item3 => {
+              if (spec[item2].includes(item3.id)) {
                 item3.isStock = true
-              }else {
+              } else {
                 item3.isStock = false
               }
             })
           }
         })
       })
-      
-      console.log(specV2)
-     
-      
 
-     
-      
+      console.log(specV2)
+
+
+
+
+
       return specV2
     } else {
       return []
@@ -204,6 +258,17 @@ const getters = {
     let price = state.detailInfo.price
     let spuId = state.detailInfo.spu_id
     let attrInfo = state.detailInfo.attr_info
+    let color
+    if(attrInfo) {
+      console.log(attrInfo)
+      let num = 58
+      let obj = attrInfo[num]
+      console.log(4444444)
+      console.log(obj)
+      color = obj.value
+    }
+   
+    
 
     let shop_info = state.detailInfo.shop_info
     let sub_title, title, goodsView;
@@ -229,8 +294,7 @@ const getters = {
 
 
 
-    return { skuId, stock, in_stock, price, spuId, title, sub_title, attrInfo, goodsView }
-    // return { skuId, price, spuId, title, sub_title, spec_json }
+    return { skuId, stock, in_stock, price, spuId, title, sub_title, attrInfo, goodsView, color }
   },
 
 
@@ -247,7 +311,7 @@ const getters = {
   // // 有效的销售属性
   // skuInfoWithStock(state) {
 
-    
+
 
   // }
 
