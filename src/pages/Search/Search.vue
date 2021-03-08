@@ -10,7 +10,7 @@
     </div>
     <div class="good-area">
       <ul class="good-list">
-        <li class="good-item" v-for="goodItem in goodList" :key="goodItem.id"  >
+        <li class="good-item" v-for="goodItem in goodList" :key="goodItem.id" @click="toGoodDetail(goodItem.shop_info.default_sku)" >
           <img :src="goodItem.sku_info[0].ali_image" alt="">
           <h3>{{goodItem.name}}</h3>
           <h5>{{goodItem.sku_info[0].sub_title}}</h5>
@@ -80,6 +80,10 @@ export default {
           return Number(p2.sku_info[0].price)-Number(p1.sku_info[0].price)
         })
       }
+    },
+    // 进入商品详情页
+    toGoodDetail(skuId){
+      this.$router.push("/item/"+skuId)
     }
   },
   watch:{

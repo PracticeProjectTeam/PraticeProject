@@ -14,6 +14,7 @@ const Item=()=>import('@/pages/Item')
 
 const Cart=()=>import('@/pages/Cart/Cart.vue') // 按需加载
 const Showgoods=()=>import('@/pages/Cart/showGoods.vue') // 按需加载
+const Order=()=>import('@/pages/order/order.vue') // 按需加载
 
 export default [
   // 主页路由
@@ -55,5 +56,11 @@ export default [
   {
     path:'/',
     redirect:'/home'
+  },
+  //订单路由
+  {
+    path:'/order',
+    component:Order
+  
   }
 ]

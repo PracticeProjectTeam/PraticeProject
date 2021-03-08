@@ -78,7 +78,7 @@
             <li class="nav-sub-item" v-for="(item,index) in navItem.list" :key="index"  >
               <div class="sub-title" >{{item.title}}</div>
               <ul class="sub-list" :style="{'width':(Math.floor(item.sub.length/5)+1)*202+'px'}" >
-                <li class="sub-item" v-for="subItem in item.sub" :key="subItem.id">
+                <li class="sub-item" v-for="subItem in item.sub" :key="subItem.id" @click="toGoodList(subItem.id)">
                   <img :src="subItem.image" alt="">
                   <span>{{subItem.name}}</span>
                 </li>
@@ -87,7 +87,7 @@
           </ul>
           
           <ul class="nav-good-list" v-if="navItem.type=='goods'" >
-            <li class="nav-good-item" v-for="(goodItem,index) in navItem.list" :key="index">
+            <li class="nav-good-item" v-for="(goodItem,index) in navItem.list" :key="index" @click="toGoodDetail(goodItem.sku)">
               <img :src="goodItem.ali_image" alt="">
               <p>{{goodItem.sku_name}}</p>
               <p>￥{{goodItem.sell_price}}</p>
@@ -130,6 +130,13 @@ export default {
       }
     })
   },
+  watch:{
+    $route:{
+      handler(){
+        this.navCurrentIndex = -1
+      }
+    }
+  },
   methods:{
     // 获取选中的navindex
     getNavCurrentIndex(index){
@@ -159,6 +166,14 @@ export default {
     // 搜索
     search(){
       this.$router.push('/search/'+this.keyword)
+    },
+    // 进入商品详情页
+    toGoodDetail(skuId){
+      this.$router.push("/item/"+skuId)
+    },
+    // 进入商品列表
+    toGoodList(categoryId){
+      this.$router.push('/goodlist/'+categoryId)
     }
   }
 }
@@ -378,6 +393,7 @@ export default {
               height: 40px;
               flex-shrink: 0;
               margin: 0 0 10px 0;
+              cursor: pointer;
               img{
                 height: 40px;
                 width: 40px;
@@ -409,6 +425,7 @@ export default {
           flex-direction: column;
           align-items: center;
           padding: 0 30px 0 0;
+          cursor: pointer;
           img{
             height: 126px;
             width: 126px;
