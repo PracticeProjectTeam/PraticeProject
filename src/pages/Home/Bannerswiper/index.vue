@@ -1,8 +1,10 @@
 <template>
-  <swiper
+  <swiper v-if="homeDataList.data"
     ref="mySwiper"
     :options="{
       loop: true,
+      autoplay:true,
+      effect:'fade',
       pagination: {
         el: '.swiper-pagination',
         clickable:true,
@@ -10,30 +12,31 @@
     }"
   >
     <swiper-slide
-      ><img src="./images/1f0f2209a141202179277019dd1eeec5.webp" alt=""
-    /></swiper-slide>
-    <swiper-slide
-      ><img src="./images/111309b00a4d3cb5f5289849ce422b44.webp" alt=""
-    /></swiper-slide>
-    <swiper-slide
-      ><img src="./images/1c6c6b970fc8f773a6e37c25dd7d5789.webp" alt=""
-    /></swiper-slide>
-    <swiper-slide
-      ><img src="./images/2da3a3f5ed70d4a3ff3cfe5d68e2d4a9.webp" alt=""
-    /></swiper-slide>
-    <swiper-slide
-      ><img src="./images/ce6aab589d4d0818206e51c700602585.webp" alt=""
-    /></swiper-slide>
-    <swiper-slide
-      ><img src="./images/d5f455111845c9542f399fa398c451f9.webp" alt=""
-    /></swiper-slide>
+    v-for="item in homeDataList.data.home_carousel"
+    :key="item"
+      ><a :href="item.link" target=”_blank”><img :src="item.image" alt=""
+    /></a></swiper-slide>
     <div class="swiper-pagination" slot="pagination"></div>
   </swiper>
 </template>
 <script>
 // import Swiper from 'swiper'
+import {mapState} from 'vuex'
 export default {
   name: "Bannerswiper",
+  data(){
+    return{
+
+    }
+  },
+  mounted(){
+    console.log(this.homeDataList)
+  },
+  computed:{
+    ...mapState({
+    homeDataList:state =>state.home.homeDataList
+  })
+ },
 };
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
