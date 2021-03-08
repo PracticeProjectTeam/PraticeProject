@@ -9,8 +9,10 @@ import {
   Radio,
   Select,
   Option,
-  Input
+  Input,
+  Dialog
 } from 'element-ui'
+Vue.use(Dialog);
 
 Vue.use(Button);
 Vue.use(Checkbox);

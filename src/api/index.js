@@ -24,12 +24,14 @@ export const reqGetShopgoods = () => ajax.get(`/product/skus?ids=100187101&with_
 
 // 用户登录
 export const reqLogin = (phone) => axios.get(`http://localhost:3000/user?phone=${phone}`)
+// 获取用户地址
+export const reqUserAddress = (userId) => axios.get(`http://localhost:3000/userAddress/${userId}`)
 
 // export const reqPromotions = (with_num)=>axios.get(`product/promotions?with_num=${with_num}`)
 
 
 // 修改购物车数据
-export const reqAddToCart =(userId,cartList)=>axios({
+export const reqChangeCart =(userId,cartList)=>axios({
   method:"patch",
   url:`http://localhost:3000/userShopCart/${userId}`,//ID
   data:{
@@ -42,5 +44,9 @@ export const reqUserShopCart = (userId)=>axios.get(`http://localhost:3000/userSh
 
 // 获取商品信息列表(公用) //ids:100162801,100187101,100052801,100023501,100061001,100060501,100060201,100086802
 export const reqGetGoodInfoList = (ids) => ajax.get(`/product/skus?ids=${ids}&with_stock=true&with_spu=true`)
+
+
+// 结算页提交
+
 
 

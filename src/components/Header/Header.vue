@@ -26,7 +26,7 @@
               <p>158***5025</p>
             </div>
             <ul>
-              <li>
+              <li  @click="toOrder">
                 <div class="user-options"></div>
                 <p>我的订单</p>
               </li>
@@ -46,7 +46,7 @@
                 <div class="user-options"></div>
                 <p>收货地址</p>
               </li>
-              <li>
+              <li  @click="logOut">
                 <div class="user-options"></div>
                 <p>退出登录</p>
               </li>
@@ -71,15 +71,15 @@
           <el-button type="success" round plain class="search-btn" v-show="!isSearching">TNT</el-button>
         </div>
         <div class="topbar-nav-icon" v-show="!isShowInput">
-          <div class="topbar-nav-user" @click="toOrder" @mouseenter="isShowProfile=true">
-            <div class="user-profile" :class="isShowProfile?'active':''" @mouseleave="isShowProfile=false" v-if="isLogin">
+          <div class="topbar-nav-user" @click="toOrder" @mouseenter="isShowBarProfile=true">
+            <div class="user-profile" :class="isShowBarProfile?'active':''" @mouseleave="isShowBarProfile=false" v-if="isLogin">
             <div class="user-profile-top">
               <img src="../../assets/avatar-default.png" alt="">
               <p>158***5025</p>
             </div>
             <ul>
-              <li>
-                <div class="user-options"></div>
+              <li @click="toOrder">
+                <div class="user-options" ></div>
                 <p>我的订单</p>
               </li>
               <li>
@@ -98,7 +98,7 @@
                 <div class="user-options"></div>
                 <p>收货地址</p>
               </li>
-              <li>
+              <li  @click="logOut">
                 <div class="user-options"></div>
                 <p>退出登录</p>
               </li>
@@ -106,7 +106,7 @@
             
           </div>
           </div>
-          <div class="topbar-nav-cart" @click="toShopCart" @mouseenter="isShowProfile=false"></div>
+          <div class="topbar-nav-cart" @click="toShopCart" @mouseenter="isShowBarProfile=false"></div>
         </div>
       </div>
       
@@ -182,6 +182,7 @@ export default {
       isSearching:false, // 是否正在搜索
       keyword:'', // 搜索的关键词
       isShowProfile:false, // 是否显示用户资料卡
+      isShowBarProfile:false, // 是否显示用户资料卡
       isLogin:false
     }
   },
@@ -256,6 +257,11 @@ export default {
     // 进入购物车
     toShopCart(){
       this.$router.push('/cart')
+    },
+    // 退出登录
+    logOut(){
+      localStorage.removeItem("UID")
+      this.$router.push('/home')
     }
   }
 }
@@ -552,6 +558,11 @@ export default {
               li{
                 height: 45px;
                 line-height: 45px;
+                
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 border-top: 1px solid rgb(238, 237, 237);
                 &:hover{
                   background-color: rgb(238, 237, 237);

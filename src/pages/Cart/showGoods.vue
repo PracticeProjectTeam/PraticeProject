@@ -178,7 +178,7 @@
         </div>
 
         <div class="buttom">
-          <div class="buttom-content">现在结算</div>
+          <div class="buttom-content" @click="toSettlement">现在结算</div>
         </div>
       </div>
     </div>
@@ -198,6 +198,9 @@ export default {
     };
   },
   mounted() {
+    //mine
+    this.$store.dispatch("getCartList",localStorage.getItem("UID"))
+    //
     this.$store.dispatch("getShopgoods");
     this.$store.dispatch("delShopgoods");
   },
@@ -262,7 +265,6 @@ export default {
       // 通过正则的方式校验错误的数据后,进行替换成正确的数据,再次赋值给文本框
       event.target.value = value.replace(/^0+|\D+0*/, "");
     },
-
     deleteItem(index) {
       this.$confirm("您确定要删除当前的商品吗?", "提示", {
         confirmButtonText: "确定",
@@ -286,6 +288,10 @@ export default {
           });
         });
     },
+    // 进入结算页
+    toSettlement(){
+      this.$router.push('/settlement')
+    }
   },
 };
 </script>

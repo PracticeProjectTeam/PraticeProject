@@ -1,15 +1,19 @@
 // 引入请求
-import { reqLogin } from "@/api/index.js";
-import { GETUSERINFO } from "../mutation-types.js";
+import { reqLogin,reqUserAddress } from "@/api/index.js";
+import { GETUSERINFO,GETUSERADDRESS } from "../mutation-types.js";
 const state = {
   // 用户数据
   userInfo:{},
-  userAddress:[],//用户地址数据
-  
+  userAddress:{},//用户地址数据
 }
 const mutations = {
+  // 获取用户信息
   [GETUSERINFO](state,userInfo){
     state.userInfo = userInfo
+  },
+  // 获取用户地址
+  [GETUSERADDRESS](state,userAddress){
+    state.userAddress = userAddress
   }
 }
 const actions = {
@@ -34,6 +38,14 @@ const actions = {
     })
     
     
+  },
+  // 获取用户地址
+  async getUserAddress({commit},userId){
+    const result = await reqUserAddress(userId)
+    console.log(result)
+    if(result.status==200){
+      commit(GETUSERADDRESS,result.data)
+    }
   }
 }
 const getters = {}

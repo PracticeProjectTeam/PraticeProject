@@ -53,15 +53,15 @@
           
         </div>
         <div class="table-good-list">
-          <div class="table-good-item">
+          <div class="table-good-item" v-for="(cart,index) in cartList" :key="index">
             <div class="table-good-item-left">
-              <img src="https://resource.smartisan.com/resource/4d9e7683b590cf4a6996d3b13136bcf8.png?x-oss-process=image/resize,w_100/format,webp" alt="">
-              <p>坚果 R2（浅黑色，8G + 128GB）</p>
+              <img :src="goodInfoList[index].shop_info.ali_image" alt="">
+              <p>{{goodInfoList[index].name}}</p>
             </div>
             <div class="table-good-item-right">
-              <p>¥ 3,999.00</p>
-              <p>1</p>
-              <p>¥ 3,999.00</p>
+              <p>￥{{goodInfoList[index].price}}.00</p>
+              <p>{{cart.count}}</p>
+              <p>￥{{goodInfoList[index].price}}.00</p>
             </div>
           </div>
         </div>
@@ -84,9 +84,6 @@
         <p class="invoice-tag">电子发票是税务局认可的有效付款凭证，可作为售后服务凭据，电子发票打印后可以用于企业报销。</p>
       </div>
     </div>
-    <div class="foot-bar " :class="ac?'active':''">
-
-    </div>
   </div>
 </template>
 <script>
@@ -98,29 +95,23 @@ export default {
   name: 'Settlement',
   data(){
     return {
-      ac:true,
       invoiceOwner: '个人',
       agree:false
     }
   },
   computed:{
     ...mapState({
-      addressList:state=>state.user.addressList
+      addressList:state=>state.user.userAddress.addressList,
+      cartList:state=>state.cart.cartList,
+      goodInfoList:state=>state.cart.goodInfoList,
+
     })
   },
   mounted(){
-    // this.getUserAddressList()
-    this.$nextTick(()=>{
-      console.log(document.querySelector('.settle-box').clientHeight)
-      document.addEventListener("scroll",()=>{
-        let height = document.documentElement.scrollTop - document.querySelector('.settle-box').offsetHeight + 45 +75
-        if(height>0){
-          this.ac = false
-        }else{
-          this.ac = true
-        }
-      })
-    })
+    this.$store.dispatch('getUserAddress',localStorage.getItem("UID"))
+
+    this.$store.dispatch("getCartList",localStorage.getItem("UID"))
+    
     
   },
   methods:{
