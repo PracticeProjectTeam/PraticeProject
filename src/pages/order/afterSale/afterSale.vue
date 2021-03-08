@@ -1,19 +1,5 @@
 <template>
-  <div id="zhuti">
-        <div class="order">
-            <div class="order-one">
-                <div class="order-top">
-                    <img src="../../../assets/avatar.png" alt="">
-                    <h6>aLIEz613</h6>
-                </div>
-                <ul>
-                    <li><a>我的订单</a></li>
-                    <li><a class="lanse">售后服务</a></li>
-                    <li><a>我的优惠</a></li>
-                    <li><a>账户资料</a></li>
-                    <li><a>收货地址</a></li>
-                </ul>
-            </div>
+        <div >
             <div class="order-two">
                 <div class="order-two-1">
                     <!-- title版块 -->
@@ -40,7 +26,7 @@
                     <!-- 售后服务 -->
                     <div class="section-border">
                         <div>
-                            <img src="../../../assets/order-empty.59ff1162.png" alt="">
+                            <img src="./image/order-empty.59ff1162.png" alt="">
                             <p>您目前还没此类服务单</p>
                             <button>返回首页</button>
                         </div>
@@ -48,24 +34,23 @@
                 </div>
             </div>
         </div>
-    </div>
 </template>
 <script>
 export default {
-  name: 'Order'
+  name: 'afterSale'
 }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
-#zhuti {
-    width: 100%;
-    min-width: 1220px;
-    background-color:#EDEDED;
+// #zhuti {
+//     width: 100%;
+//     min-width: 1220px;
+//     background-color:#EDEDED;
 
-    .order {
-        display: flex;
-        width: 1220px;
-        margin: 0 auto;
-        padding: 20px 0;
+//     .order {
+//         display: flex;
+//         width: 1220px;
+//         margin: 0 auto;
+//         padding: 20px 0;
 
         .order-one {
             width: 212px;
@@ -228,6 +213,6 @@ export default {
                 }
             }
         }
-    }
-}
+    
+
 </style>

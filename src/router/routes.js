@@ -14,6 +14,8 @@ const Login=()=>import('@/pages/Login/Login.vue')
 const Cart=()=>import('@/pages/Cart/Cart.vue') // 按需加载
 const Showgoods=()=>import('@/pages/Cart/showGoods.vue') // 按需加载
 const Order=()=>import('@/pages/order/order.vue') // 按需加载
+//WriteOrder
+const WriteOrder=()=>import('@/pages/order/writeOrder/writeOrder.vue') // 按需加载
 
 export default [
   // 主页路由
@@ -70,6 +72,12 @@ export default [
         router.push('/login')
       }
     }
+  },
+  
+  /* 订单详情 */
+  {
+    path:'/order/writeOrder',
+    component:WriteOrder
   },
   {
     path:'/detail/:ids',
