@@ -72,8 +72,7 @@
               <div class="item-spec">
                 <span class="spec-title">{{attr.spec_name}}选择</span>
                 <ul class="spec-info">
-                  <li :class="[value.isChecked?'active':'']" v-for="(value) in attr.spec_values" :key="value.id"
-                  @click="setVal(value,attr.spec_values,index)">
+                  <li :class="[value.isChecked?'active':'']" v-for="(value) in attr.spec_values" :key="value.id" @click="setVal(value,attr.spec_values,index)">
                     <aside class="spec-item item-inline">
                       <h1 class="item-name">{{value.item_value}}</h1>
                     </aside>
@@ -89,9 +88,9 @@
               <span class="do-count-title">数量选择</span>
               <aside class="do-count">
                 <div class="select">
-                  <span class="down" :class="[skuInfo.stock>0 && count>0?'':'disabled']">-</span>
+                  <span class="down" :class="[skuInfo.stock>0 && count>0?'':'disabled']" @click="changeNumber(-1)">-</span>
                   <span class="num">{{count}}</span>
-                  <span class="up" :class="[skuInfo.stock>0?'':'disabled']">+</span>
+                  <span class="up" :class="[skuInfo.stock>0?'':'disabled']" @click="changeNumber(1)">+</span>
                 </div>
               </aside>
             </div>
@@ -160,13 +159,13 @@
             </h1>
             <h2>白色</h2>
           </div>
-          <!-- <div v-if="stock.stock&&stock.in_stock" class="bar-btn">
-            <a>加入购物车</a>
-          </div> -->
-          <!-- <div :class="[skuInfo.stock>0&&skuInfo.in_stock?'white-btn':'disabled notice','bar-btn']">
+          <div v-if="skuInfo.stock&&skuInfo.in_stock" class="bar-btn">
+            <a @click="addToCart">加入购物车</a>
+          </div>
+          <div :class="[skuInfo.stock>0&&skuInfo.in_stock?'white-btn':'disabled notice','bar-btn']">
             <a v-if="skuInfo.stock&&skuInfo.in_stock">现在购买</a>
             <a v-else>到货通知</a>
-          </div> -->
+          </div>
           <div class="no-discount-price">
             <div class="bar-price">
               <i>￥</i>
@@ -203,7 +202,8 @@ export default {
       footer: true, //购买条是否固定定位
       count: 1, // 加入购物车的数量,
       specs: [], //可选择的销售属性
-      isActive:false,
+      isActive: false,
+      isStocks: [],
     };
   },
   mounted() {
@@ -220,10 +220,6 @@ export default {
         this.footer = true;
       }
     });
-    
-
-    // 
-    
   },
   methods: {
     // 选择缩略图
@@ -240,37 +236,85 @@ export default {
     },
 
     // 点击属性值，修改选中项，同时发送请求获取属性值对应的商品
-    setVal(val,attr,index) {
+    setVal(val, attr, index) {
       // 把当前的属性值对象所在的数组进行遍历
-      attr.forEach(value=>{
+      attr.forEach((value) => {
         // this.$set(value,'isChecked',false)
-        value.isChecked = false
-      })
-      val.isChecked = true
+        value.isChecked = false;
+      });
+      val.isChecked = true;
 
       // 获取当前对应的id
-      const valId = val.id
+      const valId = val.id;
       // 获取有效的销售属性对象
       // const specV2Json = this.specV2Json
       // 把属性值的id保存到数组容器中
-      this.specs[index] = valId
+      this.specs[index] = valId;
       // 把数组中的所有数字变成字符串，中间以|的方式隔开
-      const selectedSpecValue = this.specs.join('|')
-      console.log(selectedSpecValue)
+      const selectedSpecValue = this.specs.join("|");
+      // 获取有效字符串的keys
+      //let keys = Object.keys(this.specV2Json)
+      // 将当前字符串与有效的字符串进行匹配
+      this.specV2Json.forEach((item) => {
+        if (item[selectedSpecValue]) {
+          // 存在就获取对应的skuid
+          let skuId = item[selectedSpecValue];
+          console.log(skuId);
+          // 判断是否与当前skuid一样，就不重新请求
+          if (this.$route.params.ids != skuId) {
+            this.$router.replace(`/detail/${skuId}`);
+          }
+        }
+      });
+    },
 
+    // 改变商品数量
+    changeNumber(num) {
+      this.count += num * 1
+    },
 
-      console.log(valId)
-      console.log(this.specV2Json)
-      console.log(index)
+    // 加入购物车
+    async addToCart() {
+      // 获取sukId和count
+      const skuId = this.$route.params.ids
+      const count = this.count
+      const item = {
+        skuId,
+        count,
+        isSelected:"true"
+      }
+      const result = await this.$API.reqGetToCart()
+      let cartList = result.data[0].cartList
+      cartList.push(item)
+
+      const result2 = await this.$API.reqAddToCart(cartList)
+      if(result2.status == 200) {
+        console.log('添加成功')
+      }
 
     }
   },
   computed: {
     ...mapState({}),
 
-    ...mapGetters(["specV2", "aliImages", "skuInfo", "promotions","accessory",'specV2Json']),
+    ...mapGetters([
+      "specV2",
+      "aliImages",
+      "skuInfo",
+      "promotions",
+      "accessory",
+      "specV2Json",
+      'AllspecV2Json'
+    ]),
   },
   watch: {
+    // 监视商品的数量
+    count(value) {
+      // 
+      if(value<=0) {
+        this.count = 1
+      }
+    },
     // 监视route,route信息改变就请求商品信息数据
     $route: {
       handler(route) {
@@ -282,7 +326,43 @@ export default {
       // 该回调将回在侦听开始之后被立即调用
       immediate: true,
     },
-    
+
+    // 监视specV2
+    specV2: {
+      handler(spec) {
+        const temp = [];
+        spec.forEach((item) => {
+          item.spec_values.forEach((item2) => {
+            if (item2.isChecked) {
+              temp.push(item2.id);
+            }
+          });
+        });
+
+        
+        this.specs = temp;
+      },
+    },
+
+    // 监视specV2Json
+    // specV2Json:{
+    //   handler(spec) {
+    //     // const isStocks = []
+    //     console.log(1111111111111)
+    //     console.log(this.AllspecV2Json)
+    //     console.log(spec)
+    //     console.log(2222222222222222)
+    //     let arr = []
+    //     spec.forEach(item=>{
+    //       for (const key in item) {
+    //         console.log(key)
+    //         let temp = key.split('|')
+    //         if(arr.incl)
+    //       }
+    //     })
+    //   }
+    // }
+
   },
 };
 </script>
@@ -697,7 +777,7 @@ html {
       .insurance-wrapper {
         padding: 30px 0;
         overflow: auto;
-        border-top: 1px solid rgba(0,0,0,.08);
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
         .insurance-title {
           width: 85px;
           height: 70px;
@@ -708,7 +788,7 @@ html {
           box-sizing: border-box;
         }
         .insurance-info {
-          position:relative;
+          position: relative;
           float: left;
           width: 525px;
           height: 100%;
@@ -716,7 +796,7 @@ html {
             position: relative;
             width: 525px;
             cursor: pointer;
-            transition: box-shadow .15s linear;
+            transition: box-shadow 0.15s linear;
             margin-bottom: 20px;
 
             & .insurance-item {
@@ -762,9 +842,12 @@ html {
                 height: 15px;
                 top: -1px;
                 right: 0;
-                background-image: -webkit-image-set(url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAAAWRJREFUKBWFU01qg1AQHp9GlJpNkqURLxAh7UUKPUq7L5Su05uUXqRQcoS4DIgSIonR2PmGTGuaSoTk/cz3N76ntVwuW7ryWJZFbdtuGfbZNM3bfD7/AMUC2fM8OgF6ZVB3XZeOxyNtNpuXJEmehez7fi+pW2CBmsk2i1h5nj8YFDlSF9M7Z5xjjGmQgsdHpxfZKfwRd6qqQpu34tzBXUzR42AwoDiOaTgcSs8nkPevM5wQTYnT6VTw+/1e9rEARpwB1I0wDGk8HlNd1+IYRZEAV6sVKVnbEGd1gkBZljQajcQhCAIRTdOUDocDXpKs9e8sNhKs12uJO5lMhABHEG3bvjgVkLdMulE1gLIsI75JtNvteonAG478hZvDAo0KIF5RFIQjwVx71LqOXDMLvFUGMP9XAAl4rbizUffNbDZ757v66jiO4fO0gYLTSVDmWOtP6xh/pPkDuWfAEye5430P4GvPNxEywUBOq+QDAAAAAElFTkSuQmCC) 1x,url(
-                  data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAABS2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDAgNzkuMTYwNDUxLCAyMDE3LzA1LzA2LTAxOjA4OjIxICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+LUNEtwAAAcRJREFUSIm91k+L00AYx/FvMsH+IZYcQiHdSyseBK++EAkiCL6FPQlV9hUsyx59FYpR34HvQAh497AitKTQrJdmk4mHZEK2thKaSX4QkpCBT57hyWSMMAxz9OYPcAN8Bz4DX4MgSPYHmZpRABt4ArwCPgA/fN/39wcZquLRaKRFzfO8OtI0RUqpHl0BF0EQZACWFq0WwzAwDAMAIQRZlpEkCcCyHPIWupnqexFCMBgM1O3S9/0X0MFUH0ut8l/Ao84rVhFCYJomwBnwsjcYwLKqlnreK1xWDPCsV1h1O+Bphx3HYT6f1zv5UB5ohR3HwXVdLMtiNpv9d6w2WKEqm82me3gfXa/XbLfbdvBwOGSxWDCZTLShjWDP8xBCMJ1O/8FPRRvBURRV13W8DQoN/k5xHFeoOo/HY2zbPhmFhs0VxzGr1aq6b4s2hg/hbVAopvoWeJjneX1JO4oDuK5LFEUnowr+3RRWuHqBNjGBEIq9Up8xgS8AaZr2Dn8EbqSUZFnWK5wAbwCSJKlvRzuHodh4XwPsdrteKq9/x++A91BUrl6gq6arL5kZcA58Ay6llI/L7WgnObRyfQKeAq/L65/AnW74L7B9xudJBPyKAAAAAElFTkSuQmCC
-                ) 2x);
+                background-image: -webkit-image-set(
+                  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAAAWRJREFUKBWFU01qg1AQHp9GlJpNkqURLxAh7UUKPUq7L5Su05uUXqRQcoS4DIgSIonR2PmGTGuaSoTk/cz3N76ntVwuW7ryWJZFbdtuGfbZNM3bfD7/AMUC2fM8OgF6ZVB3XZeOxyNtNpuXJEmehez7fi+pW2CBmsk2i1h5nj8YFDlSF9M7Z5xjjGmQgsdHpxfZKfwRd6qqQpu34tzBXUzR42AwoDiOaTgcSs8nkPevM5wQTYnT6VTw+/1e9rEARpwB1I0wDGk8HlNd1+IYRZEAV6sVKVnbEGd1gkBZljQajcQhCAIRTdOUDocDXpKs9e8sNhKs12uJO5lMhABHEG3bvjgVkLdMulE1gLIsI75JtNvteonAG478hZvDAo0KIF5RFIQjwVx71LqOXDMLvFUGMP9XAAl4rbizUffNbDZ757v66jiO4fO0gYLTSVDmWOtP6xh/pPkDuWfAEye5430P4GvPNxEywUBOq+QDAAAAAElFTkSuQmCC)
+                    1x,
+                  url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAABS2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDAgNzkuMTYwNDUxLCAyMDE3LzA1LzA2LTAxOjA4OjIxICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+LUNEtwAAAcRJREFUSIm91k+L00AYx/FvMsH+IZYcQiHdSyseBK++EAkiCL6FPQlV9hUsyx59FYpR34HvQAh497AitKTQrJdmk4mHZEK2thKaSX4QkpCBT57hyWSMMAxz9OYPcAN8Bz4DX4MgSPYHmZpRABt4ArwCPgA/fN/39wcZquLRaKRFzfO8OtI0RUqpHl0BF0EQZACWFq0WwzAwDAMAIQRZlpEkCcCyHPIWupnqexFCMBgM1O3S9/0X0MFUH0ut8l/Ao84rVhFCYJomwBnwsjcYwLKqlnreK1xWDPCsV1h1O+Bphx3HYT6f1zv5UB5ohR3HwXVdLMtiNpv9d6w2WKEqm82me3gfXa/XbLfbdvBwOGSxWDCZTLShjWDP8xBCMJ1O/8FPRRvBURRV13W8DQoN/k5xHFeoOo/HY2zbPhmFhs0VxzGr1aq6b4s2hg/hbVAopvoWeJjneX1JO4oDuK5LFEUnowr+3RRWuHqBNjGBEIq9Up8xgS8AaZr2Dn8EbqSUZFnWK5wAbwCSJKlvRzuHodh4XwPsdrteKq9/x++A91BUrl6gq6arL5kZcA58Ay6llI/L7WgnObRyfQKeAq/L65/AnW74L7B9xudJBPyKAAAAAElFTkSuQmCC)
+                    2x
+                );
                 background-size: contain;
               }
             }
