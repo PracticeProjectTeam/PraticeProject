@@ -183,7 +183,7 @@
           <span class="icon icon-cus-service"></span>
           <figcaption class="txt">联系客服</figcaption>
         </figure>
-        <figure class="bar-item backtop">
+        <figure class="bar-item backtop" @click="toTop">
           <span class="icon icon-backtop"></span>
           <figcaption class="txt">回到顶部</figcaption>
         </figure>
@@ -298,6 +298,12 @@ export default {
         console.log('添加成功')
       }
 
+    },
+
+    // 回到顶部
+    toTop() {
+      document.body.scrollTop = 0
+      document.documentElement.scrollTop = 0
     }
   },
   computed: {
