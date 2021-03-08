@@ -16,11 +16,8 @@ export const reqPromotions = (with_num)=>ajax.get(`product/promotions?with_num=$
 export const reqGetShopCartList = () => ajax.get(`/product/skus?ids=100162801,100187101,100052801,100023501,100061001,100060501,100060201,100086802&with_stock=true&with_spu=true`)
 //获取购物车的水平
 export const reqGetShopgoods = () => ajax.get(`/product/skus?ids=100187101&with_stock=true&with_spu=true`)
-// 获取商品信息列表(公用) //ids:100162801,100187101,100052801,100023501,100061001,100060501,100060201,100086802
-export const reqGetGoodInfoList = (ids) => ajax.get(`/product/skus?ids=${ids}&with_stock=true&with_spu=true`)
 
-// 获取购物车信息表
-export const reqUserShopCart = ()=>axios.get()
+
 
 
 
@@ -30,14 +27,20 @@ export const reqLogin = (phone) => axios.get(`http://localhost:3000/user?phone=$
 
 // export const reqPromotions = (with_num)=>axios.get(`product/promotions?with_num=${with_num}`)
 
-// 获取购物车
-export const reqGetToCart = ()=>axios.get(`http://localhost:3000/userShopCart/?id=000001`)
 
-// 添加购物车
-export const reqAddToCart =(cartList)=>axios({
+// 修改购物车数据
+export const reqAddToCart =(userId,cartList)=>axios({
   method:"patch",
-  url:"http://localhost:3000/userShopCart/000001",//ID
+  url:`http://localhost:3000/userShopCart/${userId}`,//ID
   data:{
     cartList: cartList//要修改成什么
   }
 })
+
+// 获取用户购物车信息表
+export const reqUserShopCart = (userId)=>axios.get(`http://localhost:3000/userShopCart/?id=${userId}`)
+
+// 获取商品信息列表(公用) //ids:100162801,100187101,100052801,100023501,100061001,100060501,100060201,100086802
+export const reqGetGoodInfoList = (ids) => ajax.get(`/product/skus?ids=${ids}&with_stock=true&with_spu=true`)
+
+

@@ -26,7 +26,7 @@ export default [
     path:'/cart',
     component:Cart,
     beforeEnter: (to, from, next) => {
-      if(localStorage.getItem('USERINFO')){
+      if(localStorage.getItem('UID')){
         next()
       }else{
         router.push('/login')
@@ -64,7 +64,7 @@ export default [
     path:'/order',
     component:Order,
     beforeEnter: (to, from, next) => {
-      if(localStorage.getItem('USERINFO')){
+      if(localStorage.getItem('UID')){
         next()
       }else{
         router.push('/login')

@@ -283,11 +283,12 @@ export default {
         count,
         isSelected:"true"
       }
-      const result = await this.$API.reqGetToCart()
+      let userId = localStorage.getItem("UID")
+      const result = await this.$API.reqUserShopCart(userId)
       let cartList = result.data[0].cartList
       cartList.push(item)
 
-      const result2 = await this.$API.reqAddToCart(cartList)
+      const result2 = await this.$API.reqAddToCart(userId,cartList)
       if(result2.status == 200) {
         console.log('添加成功')
         this.$router.push('/cart')

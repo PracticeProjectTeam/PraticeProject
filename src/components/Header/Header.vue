@@ -19,8 +19,8 @@
         <li><a href="">下载 APP</a></li>
       </ul>
       <div class="topbar-icon">
-        <div class="topbar-user" @click="toOrder" >
-          <div class="user-profile">
+        <div class="topbar-user" @click="toOrder" @mouseenter="isShowProfile=true" >
+          <div class="user-profile" :class="isShowProfile?'active':''" @mouseleave="isShowProfile=false" v-if="isLogin">
             <div class="user-profile-top">
               <img src="../../assets/avatar-default.png" alt="">
               <p>158***5025</p>
@@ -54,7 +54,7 @@
             
           </div>
         </div>
-        <div class="topbar-cart" @click="toShopCart"></div>
+        <div class="topbar-cart" @click="toShopCart" @mouseenter="isShowProfile=false"></div>
       </div>
     </div>
     <div class="topbar-nav" :class="isShowInput?'':'scrollNav'"   @mouseleave="getNavCurrentIndex(-1)" >
@@ -71,8 +71,42 @@
           <el-button type="success" round plain class="search-btn" v-show="!isSearching">TNT</el-button>
         </div>
         <div class="topbar-nav-icon" v-show="!isShowInput">
-          <div class="topbar-nav-user" @click="toOrder"></div>
-          <div class="topbar-nav-cart" @click="toShopCart"></div>
+          <div class="topbar-nav-user" @click="toOrder" @mouseenter="isShowProfile=true">
+            <div class="user-profile" :class="isShowProfile?'active':''" @mouseleave="isShowProfile=false" v-if="isLogin">
+            <div class="user-profile-top">
+              <img src="../../assets/avatar-default.png" alt="">
+              <p>158***5025</p>
+            </div>
+            <ul>
+              <li>
+                <div class="user-options"></div>
+                <p>我的订单</p>
+              </li>
+              <li>
+                <div class="user-options"></div>
+                <p>售后服务</p>
+              </li>
+              <li>
+                <div class="user-options"></div>
+                <p>我的优惠</p>
+              </li>
+              <li>
+                <div class="user-options"></div>
+                <p>账户资料</p>
+              </li>
+              <li>
+                <div class="user-options"></div>
+                <p>收货地址</p>
+              </li>
+              <li>
+                <div class="user-options"></div>
+                <p>退出登录</p>
+              </li>
+            </ul>
+            
+          </div>
+          </div>
+          <div class="topbar-nav-cart" @click="toShopCart" @mouseenter="isShowProfile=false"></div>
         </div>
       </div>
       
@@ -147,9 +181,15 @@ export default {
       isShowInput:true,// 是否展示搜索框
       isSearching:false, // 是否正在搜索
       keyword:'', // 搜索的关键词
+      isShowProfile:false, // 是否显示用户资料卡
+      isLogin:false
     }
   },
   async mounted(){
+    // 检查用户是否登录
+    if(localStorage.getItem("UID")){
+      this.isLogin = true
+    }
     // 获取nav数据
     this.getNavData()
     
@@ -270,13 +310,10 @@ export default {
         background-size: 180%;
         cursor: pointer;
         position: relative;
-        &:hover .user-profile{
-          display: block;
-        }
         .user-profile{
           display: none;
           position: absolute;
-          top: 30px;
+          top: 35px;
           right: -20px;
           height: 377px;
           width: 170px;
@@ -285,6 +322,10 @@ export default {
           border: 1px solid #ccc;
           border-radius: 5px;
           box-shadow: 1px 1px 10px #ccc;
+          &.active{
+            display: block;
+            z-index: 20;
+          }
           .user-profile-top{
             text-align: center;
             img{
@@ -454,6 +495,78 @@ export default {
           background-position: 50%;
           background-size: cover;
           cursor: pointer;
+          position: relative;
+          .user-profile{
+            display: none;
+            position: absolute;
+            top: 35px;
+            right: -20px;
+            height: 377px;
+            width: 170px;
+            padding-top: 18px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 1px 1px 10px #ccc;
+            &.active{
+              display: block;
+              z-index: 20;
+            }
+            .user-profile-top{
+              text-align: center;
+              img{
+                height: 46px;
+                width: 46px;
+                border-radius: 50%;
+                margin-top: 5px;
+              }
+              p{
+                font-size: 12px;
+                font-weight: 700;
+                margin-top: 10px;
+              }
+            }
+            ul{
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              margin-top: 20px;
+              li:nth-child(1) .user-options{
+                background-position: 0 -41px;
+              }
+              li:nth-child(2) .user-options{
+                background-position: -20px -41px;
+              }
+              li:nth-child(3) .user-options{
+                background-position: -20px -81px;
+              }
+              li:nth-child(4) .user-options{
+                background-position: 0 -61px;
+              }
+              li:nth-child(5) .user-options{
+                background-position: -20px -61px;
+              }
+              li:nth-child(6) .user-options{
+                background-position: 0 -81px;
+              }
+              li{
+                height: 45px;
+                line-height: 45px;
+                border-top: 1px solid rgb(238, 237, 237);
+                &:hover{
+                  background-color: rgb(238, 237, 237);
+                }
+                .user-options{
+                  width: 20px;
+                  height: 20px;
+                  background-size: 240px 107px;
+                  background-repeat: no-repeat;
+                  background-image: url(//static.smartisanos.cn/indexnew/img/links.32d87deb.png);
+                  margin-right: 18px;
+                }
+              }
+            }
+          }
         }
         .topbar-nav-cart{
           width: 20px;
