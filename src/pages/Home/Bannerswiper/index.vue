@@ -3,6 +3,8 @@
     ref="mySwiper"
     :options="{
       loop: true,
+      autoplay:true,
+      effect:'fade',
       pagination: {
         el: '.swiper-pagination',
         clickable:true,

@@ -310,7 +310,7 @@ export default {
       height: 0px;
       width: 100%;
       flex-shrink: 0;
-      opacity: 0;
+      display: none;
       z-index: -10;
       // display: none;
       background-color: #fff;

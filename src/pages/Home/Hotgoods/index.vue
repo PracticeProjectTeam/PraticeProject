@@ -24,9 +24,11 @@
     </div>
   </div> -->
 
-  <div class="hot">
+  <div class="hot" v-if="homeDataList.data">
     <header>
       <h5>热门商品</h5>
+      <div class="swiper-button-prev" slot="button-prev"><img src="./images//hde7ixhldfwhx1j72d2h3ssnb9kk7qw1.png" alt=""></div>
+      <div class="swiper-button-next" slot="button-next"><img src="./images//hde7ixhldfwhx1j72d2h3ssnb9kk7qw1.png" alt=""></div>
     </header>
     <swiper
       class="allgoods"
@@ -41,20 +43,24 @@
       }"
     >
       <swiper-slide class="hotgoods" v-for="item in homeDataList.data.home_hot" :key="item.spu_id">
-        <div class="hotimg">
-          <img :src="item.spu.sku_info[0].ali_image" alt="" />
-        </div>
+        <!-- <div class="hotimg"> -->
+          <router-link class="hotimg" :to="`/item/${item.sku_id}`">
+            <img :src="item.spu.sku_info[0].ali_image" alt="" />
+          </router-link>
+        <!-- </div> -->
         <div class="hottext">
           <h3>{{ item.spu.name }}</h3>
-          <h5>{{ item.spu.sku_info[0].sub_title }}</h5>
+          <h5 class="meishuju">{{ item.spu.sku_info[0].sub_title }}</h5>
+          <h5 class="meishuju2" style="display:none">满1000减5000</h5>
         </div>
         <div class="hotselect"></div>
         <div class="hotprice">
           <span>￥{{ item.spu.sku_info[0].price }}</span>
         </div>
+        <div class="redtext">
+          <span class="red">免费</span>
+        </div>
       </swiper-slide>
-      <div class="swiper-button-prev" slot="button-prev"></div>
-      <div class="swiper-button-next" slot="button-next"></div>
     </swiper>
   </div>
 </template>
@@ -80,6 +86,24 @@ export default {
   overflow: hidden;
   .allgoods {
     display: flex;
+    // .swiper-button-next{
+    //   opacity: 0;
+    //   width: 48px;
+    //     height: 48px;
+    //     background: url(./images/hde7ixhldfwhx1j72d2h3ssnb9kk7qw1.png) no-repeat;
+    //     background-size: 48px;
+    //     border: none;
+    // }
+    .hotgoods:hover{
+      box-shadow:inset 0 0 30px rgba(0,0,0,.06);
+      .meishuju{
+        display: none;
+      }
+      .meishuju2{
+        display: block!important;
+        color: #d44d44;
+      }
+    }
     .hotgoods {
       flex: 0 0 25%;
       border-right: 1px solid #efefef;
@@ -113,6 +137,7 @@ export default {
           padding: 15px 12px 0;
           font-size: 12px;
           color: #999;
+          font-weight: 400;
         }
       }
       .hotselect {
@@ -133,6 +158,23 @@ export default {
           font-weight: 400;
         }
       }
+      .redtext{
+        width: 46px;
+        height: 20px;
+        border:1px solid #f3938b;
+        border-radius: 13px;
+        background-color: #ffe7e5;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        align-items: center;
+        .red{
+          color: #d03b34;
+          font-weight: 700;
+          padding: 0 10px;
+          font-size: 12px;
+        }
+      }
     }
   }
   header {
@@ -140,6 +182,31 @@ export default {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
+    position: relative;
+    .swiper-button-prev{
+      position: absolute;
+      left: 1120px;
+      transform: rotate(180deg);
+      outline: none;
+      img{
+        width: 48px;
+        height: 48px;
+      }
+    }
+    .swiper-button-next{
+      right: 20px;
+      outline: none;
+      img{
+        width: 48px;
+        height: 48px;
+      }
+    }
+    .swiper-button-prev::after{
+      content: "";
+    }
+    .swiper-button-next::after{
+      content: "";
+    }
     h5 {
       margin-left: 25px;
       font-weight: bolder;

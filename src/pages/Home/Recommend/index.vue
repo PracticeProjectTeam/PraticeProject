@@ -9,16 +9,22 @@
           <a :href="item.bigImg.link" target="_blank"><img :src="item.bigImg.image" alt="" /></a>
         </div>
         <div class="Recommendgoods" v-for="itemgoods in item.tabs[0].tab_items" :key="itemgoods">
-          <div class="Recommendimg">
-            <img :src="itemgoods.spu.sku_info[0].ali_image" alt="" />
-          </div>
+          <!-- <div class="Recommendimg"> -->
+            <router-link class="Recommendimg" :to="`/item/${itemgoods.sku_id}`">
+              <img :src="itemgoods.spu.sku_info[0].ali_image" alt="" />
+            </router-link>
+          <!-- </div> -->
           <div class="Recommendtext">
             <h3>{{itemgoods.spu.sku_info[0].title}}</h3>
-            <h5>{{itemgoods.spu.sku_info[0].sub_title}}</h5>
+            <h5 class="Rmeishuju">{{itemgoods.spu.sku_info[0].sub_title}}</h5>
+            <h5 class="Rmeishuju2" style="display:none">满1000减5000</h5>
           </div>
           <div class="Recommendselect"></div>
           <div class="Recommendprice">
             <span>￥{{itemgoods.spu.sku_info[0].price}}</span>
+          </div>
+          <div class="Rredtext">
+            <spanR class="Rred">免费</spanR>
           </div>
         </div>
       </div>
@@ -29,6 +35,11 @@
 import {mapState} from 'vuex'
 export default {
   name: "Recommend",
+  data(){
+    return{
+      isShow: false
+    }
+  },
   mounted(){
     console.log(this.homeDataList)
   },
@@ -55,6 +66,16 @@ export default {
         height: 100%;
       }
     }
+    .Recommendgoods:hover{
+      box-shadow:inset 0 0 30px rgba(0,0,0,.06);
+      .Rmeishuju{
+        display: none;
+      }
+      .Rmeishuju2{
+        display: block!important;
+        color: #d44d44;
+      }
+    }
     .Recommendgoods {
       flex: 0 0 25%;
       border-right: 1px solid #efefef;
@@ -62,6 +83,7 @@ export default {
       box-sizing: border-box;
       cursor: pointer;
       overflow: hidden;
+      position: relative;
       .Recommendimg {
         display: flex;
         margin: 0 auto;
@@ -88,6 +110,7 @@ export default {
           padding: 15px 12px 0;
           font-size: 12px;
           color: #999;
+          font-weight: 400;
         }
       }
       .Recommendselect {
@@ -106,6 +129,23 @@ export default {
           color: #ccc;
           padding-left: 10px;
           font-weight: 400;
+        }
+      }
+      .Rredtext{
+        width: 46px;
+        height: 20px;
+        border:1px solid #f3938b;
+        border-radius: 13px;
+        background-color: #ffe7e5;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        align-items: center;
+        .Rred{
+          color: #d03b34;
+          font-weight: 700;
+          padding: 0 10px;
+          font-size: 12px;
         }
       }
     }

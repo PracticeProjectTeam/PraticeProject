@@ -1,6 +1,6 @@
 <template>
   <section class="Navwrap" v-if="homeDataList.data">
-    <figure v-for="item in homeDataList.data.home_activities" :key="item">
+    <figure class="Navfigure" v-for="item in homeDataList.data.home_activities" :key="item">
       <a :href="item.link" target=”_blank”><img :src="item.image" alt="" /></a>
     </figure>
   </section>
@@ -30,7 +30,7 @@ export default {
   margin-top: 25px;
   border-radius: 8px;
   overflow: hidden;
-  figure {
+  .Navfigure {
     margin: 0;
     img {
       width: 100%;

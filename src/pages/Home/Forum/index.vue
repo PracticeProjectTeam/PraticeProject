@@ -2,11 +2,11 @@
   <div class="forum">
     <header>
       <h5>论坛精选</h5>
-      <a class="btn">
+      <a class="btn" href="https://bbs.smartisan.com/forum.php" target="_blank">
         <button class="btn-go">前往论坛 <i>></i></button>
       </a>
     </header>
-    <div class="allforum">
+    <div class="allforum" v-if="homeDataList.data">
       <div
         class="forumgoods"
         v-for="item in homeDataList.data.home_forum"
@@ -48,6 +48,9 @@ export default {
   box-sizing: border-box;
   .allforum {
     display: flex;
+    .forumgoods:hover{
+      box-shadow:inset 0 0 30px rgba(0,0,0,.06);
+    }
     .forumgoods {
       border-right: 1px solid rgba(0, 0, 0, 0.1);
       padding: 30px 30px 60px;
@@ -120,6 +123,7 @@ export default {
         background: #fafafa;
         padding: 0 15px;
         cursor: pointer;
+        outline: none;
       }
     }
   }
