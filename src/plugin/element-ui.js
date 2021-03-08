@@ -6,12 +6,18 @@ import {
   Message,
   Button,
   Checkbox,
-  Radio
+  Radio,
+  Select,
+  Option,
+  Input
 } from 'element-ui'
 
 Vue.use(Button);
 Vue.use(Checkbox);
 Vue.use(Radio);
+Vue.use(Select);
+Vue.use(Option);
+Vue.use(Input);
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;

@@ -1,21 +1,41 @@
+// 引入请求
+import { reqLogin } from "@/api/index.js";
+import { GETUSERINFO } from "../mutation-types.js";
 const state = {
-  // 用户地址数据
-  userInfo:{
-    id:'',
-    nickName:'',
-    count:'',
-    addressList:[
-      {
-        name:'mine',
-        phone:'15859145025',
-        address:'福建省 福州市 福清市'
-      }
-    ]
-  }
+  // 用户数据
+  userInfo:{},
+  userAddress:[],//用户地址数据
   
 }
-const mutations = {}
-const actions = {}
+const mutations = {
+  [GETUSERINFO](state,userInfo){
+    state.userInfo = userInfo
+  }
+}
+const actions = {
+  // 用户请求登录
+  async login({commit},{phone,password}){
+    const result = await reqLogin(phone)
+    return new Promise((resolve,reject)=>{
+      if(result.status===200){
+        let userInfo = result.data[0]
+        if(userInfo){
+          if(userInfo.password==password){
+            commit(GETUSERINFO,userInfo)
+            localStorage.setItem("USERINFO",JSON.stringify(userInfo))
+            resolve()
+          }else{
+            reject('密码错误')
+          }
+        }else{
+          reject('账号不存在')
+        }
+      }
+    })
+    
+    
+  }
+}
 const getters = {}
 
 // 导出模块

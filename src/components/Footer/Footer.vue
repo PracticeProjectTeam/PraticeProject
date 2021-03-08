@@ -1,5 +1,5 @@
 <template>
-  <div class="footerContainer">
+  <div class="footerContainer" v-if="$route.meta!='login'">
     <div class="footer-menu">
       <!-- 用户服务 -->
       <div class="footer-service">

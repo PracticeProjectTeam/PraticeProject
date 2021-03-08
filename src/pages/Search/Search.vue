@@ -52,7 +52,7 @@ export default {
         let goodlist = [...listResult.data.data.list]
         goodlist.forEach((item,index)=>{
           let searchKey = item.name.indexOf(this.$route.params.keyword)
-          if(searchKey){
+          if(searchKey!=-1){
             let keyItem = goodlist[index]
             goodlist.splice(index,1)
             goodlist.unshift(keyItem)
@@ -83,7 +83,7 @@ export default {
     },
     // 进入商品详情页
     toGoodDetail(skuId){
-      this.$router.push("/item/"+skuId)
+      this.$router.push("/detail/"+skuId)
     }
   },
   watch:{

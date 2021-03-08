@@ -1,5 +1,4 @@
-
-
+import router from '../router/index.js'
 // 引入组件
 // 主页
 const Home=()=>import('@/pages/Home/Home.vue') // 按需加载
@@ -9,8 +8,8 @@ const Goodlist=()=>import('@/pages/Goodlist/Goodlist.vue')
 const Settlement=()=>import('@/pages/Settlement/Settlement.vue')
 // 搜索结果页
 const Search=()=>import('@/pages/Search/Search.vue')
-// 商品详情页
-const Item=()=>import('@/pages/Item')
+const Detail=()=>import('@/pages/Detail/Detail.vue')
+const Login=()=>import('@/pages/Login/Login.vue')
 
 const Cart=()=>import('@/pages/Cart/Cart.vue') // 按需加载
 const Showgoods=()=>import('@/pages/Cart/showGoods.vue') // 按需加载
@@ -22,8 +21,9 @@ export default [
     path:'/home',
     component:Home
   },
+  // 购物车
   {
-    path:'/Cart',
+    path:'/cart',
     component:Cart
   },
   {
@@ -36,11 +36,6 @@ export default [
   {
     path:'/goodlist/:categoryid',
     component:Goodlist
-  },
-  // 商品详情
-  {
-    path:'/item/:ids',
-    component:Item
   },
   // 结算页
   {
@@ -60,7 +55,24 @@ export default [
   //订单路由
   {
     path:'/order',
-    component:Order
-  
+    component:Order,
+    beforeEnter: (to, from, next) => {
+      if(localStorage.getItem('USERINFO')){
+        next()
+      }else{
+        router.push('/login')
+      }
+    }
+  },
+  {
+    path:'/detail/:ids',
+    name:'detail',
+    component:Detail
+  },
+  {
+    path:'/login',
+    name:'login',
+    meta:"login",
+    component:Login
   }
 ]

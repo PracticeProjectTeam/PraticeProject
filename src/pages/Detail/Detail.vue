@@ -1,5 +1,4 @@
 <template>
-
   <div class="wrapper">
     <div class="item-wrapper">
       <section class="gray-box clearfix">
@@ -8,7 +7,7 @@
             <!--缩略图-->
             <figure class="thumbnail">
               <ul>
-                <li @click="changeCurrentIndex(index)" :class="{on:imgCurrentIndex==index}" v-for="(item,index) in shop_info.ali_images" :key="item">
+                <li @click="changeCurrentIndex(index)" :class="{on:imgCurrentIndex==index}" v-for="(item,index) in aliImages" :key="item">
                   <img :src="item">
                 </li>
               </ul>
@@ -17,7 +16,7 @@
             <figure class="thumb">
               <ul>
                 <li class="on">
-                  <img alt :src="shop_info.ali_images[imgCurrentIndex]">
+                  <img alt :src="aliImages[imgCurrentIndex]">
                 </li>
               </ul>
             </figure>
@@ -27,12 +26,12 @@
         <div class="item-information">
 
           <article class="item-title">
-            <h1>{{shop_info.title}}</h1>
-            <h2>{{shop_info.sub_title}}</h2>
+            <h1>{{skuInfo.title}}</h1>
+            <h2>{{skuInfo.sub_title}}</h2>
             <div class="item-price">
               <span>
                 <em>￥</em>
-                <i>{{price}}</i>
+                <i>{{skuInfo.price}}</i>
               </span>
             </div>
           </article>
@@ -51,41 +50,48 @@
                     <a href="http://baidu.com">查看详情</a>
                   </label>
                 </article>
-                <article class="activities-item" v-for="item in promotions" :key="item.id">
-                  <figure class="tag-wrapper">
-                    <span class="tag tag-red">{{item.tag}} </span>
-                  </figure>
-                  <label v-if="item.type === 9">
-                    满 {{item.rule.result.discount[0].full_money}} 减 {{item.rule.result.discount[0].decrease_money}}
-                    <a href="http://baidu.com">查看活动详情</a>
-                  </label>
-                </article>
+                <template v-if="promotions">
+                  <article class="activities-item" v-for="item in promotions" :key="item.id">
+                    <figure class="tag-wrapper">
+                      <span class="tag tag-red">{{item.tag}} </span>
+                    </figure>
+                    <label v-if="item.type === 9">
+                      满 {{item.rule.result.discount[0].full_money}} 减 {{item.rule.result.discount[0].decrease_money}}
+                      <a href="http://baidu.com">查看活动详情</a>
+                    </label>
+                  </article>
+                </template>
+
               </div>
             </div>
           </section>
 
-          <!--颜色选择-->
-          <section class="item-spec-wrapper clearfix item-spec-package" v-for="item in shop_info.spec_v2" :key="item.spec_id">
-            <div class="item-spec">
-              <span class="spec-title">{{item.spec_name}}选择</span>
-              <ul class="spec-info">
-                <li class="active" v-for="(item2) in item.spec_values" :key="item2.id">
-                  <aside class="spec-item item-inline">
-                    <h1 class="item-name">{{item2.item_value}}</h1>
-                  </aside>
-                </li>
-              </ul>
-            </div>
-          </section>
+          <!--颜色容量选择-->
+          <template v-if="specV2">
+            <section class="item-spec-wrapper clearfix item-spec-package" v-for="(attr,index) in specV2" :key="index">
+              <div class="item-spec">
+                <span class="spec-title">{{attr.spec_name}}选择</span>
+                <ul class="spec-info">
+                  <li :class="[value.isChecked?'active':'']" v-for="(value) in attr.spec_values" :key="value.id"
+                  @click="setVal(value,attr.spec_values,index)">
+                    <aside class="spec-item item-inline">
+                      <h1 class="item-name">{{value.item_value}}</h1>
+                    </aside>
+                  </li>
+                </ul>
+              </div>
+            </section>
+          </template>
+
           <!--数量选择-->
           <section class="item-do-count-wrapper clearfix">
             <div class="item-do-count">
               <span class="do-count-title">数量选择</span>
               <aside class="do-count">
                 <div class="select">
-                  <span class="down" :class="[stock.stock>0 && count>0?'':'disabled']">-</span>
+                  <span class="down" :class="[skuInfo.stock>0 && count>0?'':'disabled']">-</span>
                   <span class="num">{{count}}</span>
-                  <span class="up" :class="[stock.stock>0?'':'disabled']">+</span>
+                  <span class="up" :class="[skuInfo.stock>0?'':'disabled']">+</span>
                 </div>
               </aside>
             </div>
@@ -101,6 +107,30 @@
               </aside>
             </div>
           </section>
+          <!--保修服务-->
+          <section class="insurance-wrapper">
+            <span class="insurance-title">保修服务</span>
+            <ul class="insurance-info">
+              <li v-for="(item) in accessory" :key="item.goods_code">
+                <div class="insurance-item">
+                  <div class="insurance-item-left">
+                    <h1>{{item.goods_name}}</h1>
+                    <p>“屏幕意外摔碎，可以免费更换 ? ”</p>
+                  </div>
+                  <div class="insurance-item-right">
+                    <h2>
+                      <span class="money">{{item.price}}</span>元 / {{item.service_time/12}} 年
+                    </h2>
+                    <p>折算后仅需
+                      <span>{{(item.price/((item.service_time/12)*365)).toFixed(2)}}</span> 元/天
+                    </p>
+                  </div>
+                  <div class="icon"></div>
+                </div>
+              </li>
+
+            </ul>
+          </section>
         </div>
       </section>
       <section class="gray-box clearfix">
@@ -108,7 +138,7 @@
           <h2>产品信息</h2>
         </article>
         <div class="item-info">
-          <img :src="goods_view">
+          <img :src="item" v-for="item in skuInfo.goodsView" :key="item">
         </div>
       </section>
       <section class="gray-box clearfix">
@@ -130,13 +160,13 @@
             </h1>
             <h2>白色</h2>
           </div>
-          <div v-if="stock.stock&&stock.in_stock" class="bar-btn">
+          <!-- <div v-if="stock.stock&&stock.in_stock" class="bar-btn">
             <a>加入购物车</a>
-          </div>
-          <div :class="[stock.stock>0&&stock.in_stock?'white-btn':'disabled notice','bar-btn']">
-            <a v-if="stock.stock&&stock.in_stock">现在购买</a>
+          </div> -->
+          <!-- <div :class="[skuInfo.stock>0&&skuInfo.in_stock?'white-btn':'disabled notice','bar-btn']">
+            <a v-if="skuInfo.stock&&skuInfo.in_stock">现在购买</a>
             <a v-else>到货通知</a>
-          </div>
+          </div> -->
           <div class="no-discount-price">
             <div class="bar-price">
               <i>￥</i>
@@ -147,7 +177,6 @@
         </div>
       </div>
     </div>
-
     <!--客服-->
     <div>
       <aside class="service-fixed-bar">
@@ -167,18 +196,18 @@
 //  引入vuex的辅助函数
 import { mapState, mapGetters } from "vuex";
 export default {
-  name: "Item",
+  name: "Detail",
   data() {
     return {
       imgCurrentIndex: 0, //当前缩略图的下标
       footer: true, //购买条是否固定定位
-      promotions: [], // 优惠活动
-      count: 1, // 加入购物车的数量
-      productCurrentIndex:0,
-      skuInfos:[], //可选择的skuinfos
+      count: 1, // 加入购物车的数量,
+      specs: [], //可选择的销售属性
+      isActive:false,
     };
   },
-  mounted() {},
+  mounted() {
+  },
   updated() {
     let wrapperHeight = document.querySelector(".wrapper").clientHeight;
     document.addEventListener("scroll", () => {
@@ -191,9 +220,10 @@ export default {
         this.footer = true;
       }
     });
+    
 
-    this.getPromotions(true);
-    this.getSkuInfo(1001628)
+    // 
+    
   },
   methods: {
     // 选择缩略图
@@ -201,43 +231,44 @@ export default {
       this.imgCurrentIndex = index;
     },
 
-    // 获取所有的促销活动
-    async getPromotions(with_num) {
-      const result = await this.$API.reqPromotions(with_num);
-      if (result.status == 200) {
-        this.promotions = result.data.data.list.filter((item) => {
-          const goods_code = this.product_info.goods_code;
-          if (item.rule.condition.main_skus.toString()) {
-            return item.rule.condition.main_skus.includes(Number(goods_code));
-          }
-        });
+    // 获取所有的sku_info
+    async getSkuInfo(ids) {
+      const result = await this.$API.reqSpus(ids);
+      if (result.status === 200) {
+        this.skuInfos = result.data.data.list[0].sku_info;
       }
     },
 
-    // 获取所有的sku_info
-    async getSkuInfo(ids) {
-      const result = await this.$API.reqSpus(ids)
-      if(result.status === 200) {
-        console.log(111111111111111111)
-        console.log(result.data.data.list[0])
-        this.skuInfos = result.data.data.list[0].sku_info
-      }
+    // 点击属性值，修改选中项，同时发送请求获取属性值对应的商品
+    setVal(val,attr,index) {
+      // 把当前的属性值对象所在的数组进行遍历
+      attr.forEach(value=>{
+        // this.$set(value,'isChecked',false)
+        value.isChecked = false
+      })
+      val.isChecked = true
+
+      // 获取当前对应的id
+      const valId = val.id
+      // 获取有效的销售属性对象
+      // const specV2Json = this.specV2Json
+      // 把属性值的id保存到数组容器中
+      this.specs[index] = valId
+      // 把数组中的所有数字变成字符串，中间以|的方式隔开
+      const selectedSpecValue = this.specs.join('|')
+      console.log(selectedSpecValue)
+
+
+      console.log(valId)
+      console.log(this.specV2Json)
+      console.log(index)
+
     }
   },
   computed: {
-    ...mapState({
-      // //
-      // itemInfo:(state)=>state.item.itemInfo,
-    }),
-    // 产品详情信息对象
-    ...mapGetters([
-      "shop_info",
-      "product_info",
-      "price",
-      "goods_view",
-      "stock",
-      'sku_info'
-    ]),
+    ...mapState({}),
+
+    ...mapGetters(["specV2", "aliImages", "skuInfo", "promotions","accessory",'specV2Json']),
   },
   watch: {
     // 监视route,route信息改变就请求商品信息数据
@@ -246,11 +277,12 @@ export default {
         // 获取路由地址中的params的参数ids
         let ids = route.params.ids;
         // 调用action获取产品信息数据
-        this.$store.dispatch("getItemInfo", ids);
+        this.$store.dispatch("getDetailInfo", ids);
       },
       // 该回调将回在侦听开始之后被立即调用
       immediate: true,
     },
+    
   },
 };
 </script>
@@ -617,7 +649,7 @@ html {
         background-position: 0 0;
       }
       .disabled {
-        cursor:not-allowed;
+        cursor: not-allowed;
       }
       .select .up.disabled:before {
         background-position: 0 -240px;
@@ -657,6 +689,84 @@ html {
               position: absolute;
               left: 0;
               font-size: 14px;
+            }
+          }
+        }
+      }
+
+      .insurance-wrapper {
+        padding: 30px 0;
+        overflow: auto;
+        border-top: 1px solid rgba(0,0,0,.08);
+        .insurance-title {
+          width: 85px;
+          height: 70px;
+          line-height: 70px;
+          color: #666;
+          font-size: 14px;
+          float: left;
+          box-sizing: border-box;
+        }
+        .insurance-info {
+          position:relative;
+          float: left;
+          width: 525px;
+          height: 100%;
+          & li {
+            position: relative;
+            width: 525px;
+            cursor: pointer;
+            transition: box-shadow .15s linear;
+            margin-bottom: 20px;
+
+            & .insurance-item {
+              position: relative;
+              height: 70px;
+              border: 1px solid #e5e5e5;
+              border-radius: 7px;
+              & .insurance-item-left {
+                float: left;
+                color: #333;
+                margin-left: 20px;
+                & h1 {
+                  font-size: 18px;
+                  margin-top: 13px;
+                }
+                & p {
+                  font-size: 14px;
+                  margin-top: 11px;
+                  color: #999;
+                }
+              }
+
+              & .insurance-item-right {
+                float: right;
+                color: #d44d44;
+                margin-right: 20px;
+                & h2 {
+                  font-size: 14px;
+                  margin-top: 9px;
+                  & .money {
+                    font-size: 21px;
+                  }
+                }
+                & p {
+                  font-size: 14px;
+                  margin-top: 10px;
+                }
+              }
+
+              & .icon {
+                position: absolute;
+                width: 15px;
+                height: 15px;
+                top: -1px;
+                right: 0;
+                background-image: -webkit-image-set(url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAAAWRJREFUKBWFU01qg1AQHp9GlJpNkqURLxAh7UUKPUq7L5Su05uUXqRQcoS4DIgSIonR2PmGTGuaSoTk/cz3N76ntVwuW7ryWJZFbdtuGfbZNM3bfD7/AMUC2fM8OgF6ZVB3XZeOxyNtNpuXJEmehez7fi+pW2CBmsk2i1h5nj8YFDlSF9M7Z5xjjGmQgsdHpxfZKfwRd6qqQpu34tzBXUzR42AwoDiOaTgcSs8nkPevM5wQTYnT6VTw+/1e9rEARpwB1I0wDGk8HlNd1+IYRZEAV6sVKVnbEGd1gkBZljQajcQhCAIRTdOUDocDXpKs9e8sNhKs12uJO5lMhABHEG3bvjgVkLdMulE1gLIsI75JtNvteonAG478hZvDAo0KIF5RFIQjwVx71LqOXDMLvFUGMP9XAAl4rbizUffNbDZ757v66jiO4fO0gYLTSVDmWOtP6xh/pPkDuWfAEye5430P4GvPNxEywUBOq+QDAAAAAElFTkSuQmCC) 1x,url(
+                  data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAABS2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDAgNzkuMTYwNDUxLCAyMDE3LzA1LzA2LTAxOjA4OjIxICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+LUNEtwAAAcRJREFUSIm91k+L00AYx/FvMsH+IZYcQiHdSyseBK++EAkiCL6FPQlV9hUsyx59FYpR34HvQAh497AitKTQrJdmk4mHZEK2thKaSX4QkpCBT57hyWSMMAxz9OYPcAN8Bz4DX4MgSPYHmZpRABt4ArwCPgA/fN/39wcZquLRaKRFzfO8OtI0RUqpHl0BF0EQZACWFq0WwzAwDAMAIQRZlpEkCcCyHPIWupnqexFCMBgM1O3S9/0X0MFUH0ut8l/Ao84rVhFCYJomwBnwsjcYwLKqlnreK1xWDPCsV1h1O+Bphx3HYT6f1zv5UB5ohR3HwXVdLMtiNpv9d6w2WKEqm82me3gfXa/XbLfbdvBwOGSxWDCZTLShjWDP8xBCMJ1O/8FPRRvBURRV13W8DQoN/k5xHFeoOo/HY2zbPhmFhs0VxzGr1aq6b4s2hg/hbVAopvoWeJjneX1JO4oDuK5LFEUnowr+3RRWuHqBNjGBEIq9Up8xgS8AaZr2Dn8EbqSUZFnWK5wAbwCSJKlvRzuHodh4XwPsdrteKq9/x++A91BUrl6gq6arL5kZcA58Ay6llI/L7WgnObRyfQKeAq/L65/AnW74L7B9xudJBPyKAAAAAElFTkSuQmCC
+                ) 2x);
+                background-size: contain;
+              }
             }
           }
         }

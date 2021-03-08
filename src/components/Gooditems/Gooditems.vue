@@ -35,7 +35,7 @@ export default {
     },
     // 进入商品详情页
     toGoodDetail(skuId){
-      this.$router.push("/item/"+skuId)
+      this.$router.push("/detail/"+skuId)
     }
   }
 }
