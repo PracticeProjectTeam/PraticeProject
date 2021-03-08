@@ -19,6 +19,10 @@ export const reqGetShopgoods = () => ajax.get(`/product/skus?ids=100187101&with_
 // 获取商品信息列表(公用) //ids:100162801,100187101,100052801,100023501,100061001,100060501,100060201,100086802
 export const reqGetGoodInfoList = (ids) => ajax.get(`/product/skus?ids=${ids}&with_stock=true&with_spu=true`)
 
+// 获取购物车信息表
+export const reqUserShopCart = ()=>axios.get()
+
+
 
 
 // 用户登录

@@ -22,7 +22,7 @@ const actions = {
         if(userInfo){
           if(userInfo.password==password){
             commit(GETUSERINFO,userInfo)
-            localStorage.setItem("USERINFO",JSON.stringify(userInfo))
+            localStorage.setItem("USERINFO",userInfo.id)
             resolve()
           }else{
             reject('密码错误')
