@@ -1,5 +1,6 @@
 // 引入api接口
 import { reqDetailInfo, reqPromotions } from '@/api'
+import Vue from 'vue'
 const state = {
   detailInfo: {}, // 商品详情信息对象
   promotions: [], // 活动列表
@@ -57,6 +58,27 @@ const actions = {
 }
 
 const getters = {
+  // 有效销售属性值的json
+  specV2Json(state) {
+    let specV2Json = []
+    let spu = state.detailInfo.spu
+    if(spu) {
+      let skuInfos = spu.sku_info
+      skuInfos.forEach(item=>{
+        let temp = []
+        let skuId = item.sku_id
+        item.spec_json.forEach(item2=>{
+          temp.push(item2.spec_value_id)
+        })
+        let json = temp.join('|')
+        let obj = {}
+        obj[json] = skuId
+        specV2Json.push(obj)
+      })
+      return specV2Json
+    }
+
+  },
   // 销售属性值对应产品id的键值对数据
   // 销售属性值数组
   specV2(state) {
@@ -102,9 +124,11 @@ const getters = {
               item.spec_values.forEach(item3=>{
                 // console.log(item3.id,attr[item2].spec_value_id)
                 if(item3.id == attr[item2].spec_value_id) {
-                  item3.isChecked = true
+                  Vue.set(item3,'isChecked',true)
+                  // item3.isChecked = true
                 }else {
-                  item3.isChecked = false
+                  Vue.set(item3,'isChecked',false)
+                  // item3.isChecked = false
                 }
               })
             }
@@ -121,7 +145,7 @@ const getters = {
               if(spec[item2].includes(item3.id)) {
                 item3.isStock = true
               }else {
-                item3.isChecked = false
+                item3.isStock = false
               }
             })
           }

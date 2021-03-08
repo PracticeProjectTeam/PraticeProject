@@ -68,13 +68,14 @@
 
           <!--颜色容量选择-->
           <template v-if="specV2">
-            <section class="item-spec-wrapper clearfix item-spec-package" v-for="(item,index) in specV2" :key="index">
+            <section class="item-spec-wrapper clearfix item-spec-package" v-for="(attr,index) in specV2" :key="index">
               <div class="item-spec">
-                <span class="spec-title">{{item.spec_name}}选择</span>
+                <span class="spec-title">{{attr.spec_name}}选择</span>
                 <ul class="spec-info">
-                  <li :class="[item2.isChecked?'active':'']" v-for="(item2) in item.spec_values" :key="item2.id">
+                  <li :class="[value.isChecked?'active':'']" v-for="(value) in attr.spec_values" :key="value.id"
+                  @click="setVal(value,attr.spec_values,index)">
                     <aside class="spec-item item-inline">
-                      <h1 class="item-name">{{item2.item_value}}</h1>
+                      <h1 class="item-name">{{value.item_value}}</h1>
                     </aside>
                   </li>
                 </ul>
@@ -201,8 +202,7 @@ export default {
       imgCurrentIndex: 0, //当前缩略图的下标
       footer: true, //购买条是否固定定位
       count: 1, // 加入购物车的数量,
-      skuInfos: [], //可选择的skuinfos
-
+      specs: [], //可选择的销售属性
       isActive:false,
     };
   },
@@ -238,11 +238,37 @@ export default {
         this.skuInfos = result.data.data.list[0].sku_info;
       }
     },
+
+    // 点击属性值，修改选中项，同时发送请求获取属性值对应的商品
+    setVal(val,attr,index) {
+      // 把当前的属性值对象所在的数组进行遍历
+      attr.forEach(value=>{
+        // this.$set(value,'isChecked',false)
+        value.isChecked = false
+      })
+      val.isChecked = true
+
+      // 获取当前对应的id
+      const valId = val.id
+      // 获取有效的销售属性对象
+      // const specV2Json = this.specV2Json
+      // 把属性值的id保存到数组容器中
+      this.specs[index] = valId
+      // 把数组中的所有数字变成字符串，中间以|的方式隔开
+      const selectedSpecValue = this.specs.join('|')
+      console.log(selectedSpecValue)
+
+
+      console.log(valId)
+      console.log(this.specV2Json)
+      console.log(index)
+
+    }
   },
   computed: {
     ...mapState({}),
 
-    ...mapGetters(["specV2", "aliImages", "skuInfo", "promotions","accessory"]),
+    ...mapGetters(["specV2", "aliImages", "skuInfo", "promotions","accessory",'specV2Json']),
   },
   watch: {
     // 监视route,route信息改变就请求商品信息数据
