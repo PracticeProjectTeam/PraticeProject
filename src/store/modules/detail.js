@@ -17,11 +17,6 @@ const mutations = {
     state.promotions = list
   },
 
-  // // 修改spus
-  // RECEIVE_SPUS(state, { list }) {
-  //   state.spus = list[0]
-  // }
-
 }
 
 const actions = {
@@ -46,15 +41,6 @@ const actions = {
       commit('RECEIVE_PROMOTIONS', result.data.list)
     }
   },
-
-  // 获取spus规格
-  // async getSpus({ commit }, ids) {
-  //   const result = await reqSpus(ids)
-  //   if (result.status === 200) {
-  //     commit('RECEIVE_SPUS', result.data.data)
-  //   }
-  // }
-
 }
 
 const getters = {
@@ -78,6 +64,31 @@ const getters = {
       return specV2Json
     }
 
+  },
+
+  // 所有销售属性对应的json
+  AllspecV2Json(state) {
+    let arr = []
+    let shop_info = state.detailInfo.shop_info
+    
+    if(shop_info) {
+      let specV2 = state.detailInfo.shop_info.spec_v2+
+      specV2.forEach((item,index)=>{
+        item.spec_values.forEach(item2=>{
+          let id1 = item2.id
+            if(specV2[index+1]){
+              specV2[index+1].spec_values.forEach(item3=>{
+                let id2 = item3.id
+                let str = id1+'|'+id2
+                arr.push(str)
+              })
+            }
+  
+        })
+      })
+    }
+    
+    return arr
   },
   // 销售属性值对应产品id的键值对数据
   // 销售属性值数组
@@ -240,15 +251,7 @@ const getters = {
 
   // }
 
-  // 展示图
-  // goods_view(state) {
-  //   let shop_info = state.detailInfo.shop_info
-  //   if(shop_info) {
-  //     return shop_info.tpl_content.base.images.goods_view[0].url
-  //   } else {
-  //     return []
-  //   }
-  // },
+
 
 
 }

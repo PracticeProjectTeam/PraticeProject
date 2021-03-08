@@ -24,7 +24,14 @@ export default [
   // 购物车
   {
     path:'/cart',
-    component:Cart
+    component:Cart,
+    beforeEnter: (to, from, next) => {
+      if(localStorage.getItem('USERINFO')){
+        next()
+      }else{
+        router.push('/login')
+      }
+    }
   },
   {
     path:'/Showgoods',

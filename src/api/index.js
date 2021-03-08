@@ -24,3 +24,16 @@ export const reqGetGoodInfoList = (ids) => ajax.get(`/product/skus?ids=${ids}&wi
 // 用户登录
 export const reqLogin = (phone) => axios.get(`http://localhost:3000/user?phone=${phone}`)
 
+// export const reqPromotions = (with_num)=>axios.get(`product/promotions?with_num=${with_num}`)
+
+// 获取购物车
+export const reqGetToCart = ()=>axios.get(`http://localhost:3000/userShopCart/?id=000001`)
+
+// 添加购物车
+export const reqAddToCart =(cartList)=>axios({
+  method:"patch",
+  url:"http://localhost:3000/userShopCart/000001",//ID
+  data:{
+    cartList: cartList//要修改成什么
+  }
+})
