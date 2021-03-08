@@ -1,4 +1,5 @@
 module.exports = {
+  lintOnSave:false,
   devServer: {
     proxy: {  //可以是一个指向开发环境 API 服务器的字符串
       '/api': { //默认路径
