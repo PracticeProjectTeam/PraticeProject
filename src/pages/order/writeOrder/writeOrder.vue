@@ -23,7 +23,10 @@
                             </div>
                         </li>
                         <li class="goods-xj">
-                            
+                             <div>
+                                 <p>+</p>
+                                 <p>使用新地址</p>
+                             </div>
                         </li>
                     </ul>
                 </div>
@@ -94,7 +97,7 @@
 </template>
 <script>
 export default {
-    name: 'Order',
+    name: 'witeOrder',
 
     data () {
       return {
@@ -199,9 +202,22 @@ export default {
                             .goods-xj {
                                 width: 241px;
                                 height: 137px;
-                                border: 1px solid #6A8FE5;
+                                border: 1px solid #EDEDED;
                                 padding: 19px 14px 0 19px;
                                 margin: 0 18px 30px 0;
+                                &:hover {
+                                        background-color: #EDEDED
+                                    }
+
+                                div {
+                                    display: flex;
+                                    flex-direction: column;
+                                    justify-content: center;
+                                    align-items: center;
+                                    color: #999999;
+
+                                    
+                                }
 
                             }
                             
