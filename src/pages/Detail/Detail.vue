@@ -71,20 +71,24 @@
             <section class="item-spec-wrapper clearfix item-spec-package" v-for="(attr,index) in specV2" :key="index">
               <div class="item-spec">
                 <span class="spec-title">{{attr.spec_name}}选择</span>
-                <ul class="spec-info" v-if="index==0">
-                  <li class="normal" :class="[value.isChecked?'active':'']" v-for="(value) in attr.spec_values" :key="value.id" @click="setVal(value,attr.spec_values,index)">
-                    <aside class="spec-item item-inline">
-                      <h1 class="item-name">{{value.item_value}}</h1>
-                    </aside>
-                  </li>
-                </ul>
-                <ul class="spec-info" v-if="index==1">
-                  <li class="normal" :class="[value.isChecked?'active':'',!AllspecV2Json[specIndex][index2]?'disabled':'']" v-for="(value,index2) in attr.spec_values" :key="value.id" @click="setVal(value,attr.spec_values,index)">
-                    <aside class="spec-item item-inline">
-                      <h1 class="item-name">{{value.item_value}}</h1>
-                    </aside>
-                  </li>
-                </ul>
+                <template v-if="index==0">
+                  <ul class="spec-info">
+                    <li class="normal" :class="[value.isChecked?'active':'']" v-for="(value,index2) in attr.spec_values" :key="value.id" @click="setVal(index,value,attr.spec_values,index2,attr)">
+                      <aside class="spec-item item-inline">
+                        <h1 class="item-name">{{value.item_value}}</h1>
+                      </aside>
+                    </li>
+                  </ul>
+                </template>
+                <template v-if="index==1">
+                  <ul class="spec-info">
+                    <li class="normal" :class="[value.isChecked?'active':'',!AllspecV2Json[specIndex1][index3]?'disabled':'']" v-for="(value,index3) in attr.spec_values" :key="value.id" @click="setVal(index,value,attr.spec_values,index3,attr)">
+                      <aside class="spec-item item-inline">
+                        <h1 class="item-name">{{value.item_value}}</h1>
+                      </aside>
+                    </li>
+                  </ul>
+                </template>
               </div>
             </section>
           </template>
@@ -213,7 +217,7 @@ export default {
       specs: [], //可选择的销售属性
       isActive: false,
       isStocks: [],
-      specIndex:null,
+      specIndex: "",
     };
   },
   mounted() {
@@ -231,37 +235,8 @@ export default {
         this.footer = true;
       }
     });
+
     this.load.close();
-
-    let spec_values = this.specV2[0].spec_values;
-        let arr = [];
-        if (spec_values) {
-          // console.log(shopInfo.spec_v2[0].spec_values)
-          arr = spec_values.map((item) => {
-            return item.id;
-          });
-        }
-        // Object.keys(obj).forEach(item => {
-        //   if (obj[item].length == 0) {
-        //     delete obj[item]
-        //   }
-        // })
-
-        // 获取当前的第一个销售属性id
-        let attrInfo = this.skuInfo.attrInfo;
-        let val;
-        if (attrInfo) {
-          val = attrInfo[Object.keys(attrInfo)[1]].spec_value_id;
-        }
-
-        console.log(1111);
-        console.log(arr);
-        console.log(attrInfo[Object.keys(attrInfo)[1]].spec_value_id);
-        console.log(22222);
-
-        let index = arr.indexOf(String(val));
-        console.log(index);
-        this.specIndex = index
   },
   methods: {
     // 选择缩略图
@@ -279,41 +254,45 @@ export default {
     // },
 
     // 点击属性值，修改选中项，同时发送请求获取属性值对应的商品
-    setVal(val, attr, index) {
-      console.log(77777777777777777777)
-      console.log(index)
-      console.log(this.AllspecV2Json[specIndex][index2])
+    setVal(index0,val, attr, index, attrParent) {
+      console.log(this.specs, index);
       // 把当前下标变成index
-      this.specIndex = index;
-      // 把当前的属性值对象所在的数组进行遍历
-      attr.forEach((value) => {
-        // this.$set(value,'isChecked',false)
-        value.isChecked = false;
-      });
-      val.isChecked = true;
+      if (attrParent.spec_name == "颜色") {
+        this.specIndex = index;
+      } 
+        // 把当前的属性值对象所在的数组进行遍历
+        attr.forEach((value) => {
+          // this.$set(value,'isChecked',false)
+          value.isChecked = false;
+        });
+        val.isChecked = true;
 
-      // 获取当前对应的id
-      const valId = val.id;
-      // 获取有效的销售属性对象
-      // const specV2Json = this.specV2Json
-      // 把属性值的id保存到数组容器中
-      this.specs[index] = valId;
-      // 把数组中的所有数字变成字符串，中间以|的方式隔开
-      const selectedSpecValue = this.specs.join("|");
-      // 获取有效字符串的keys
-      //let keys = Object.keys(this.specV2Json)
-      // 将当前字符串与有效的字符串进行匹配
-      this.specV2Json.forEach((item) => {
-        if (item[selectedSpecValue]) {
-          // 存在就获取对应的skuid
-          let skuId = item[selectedSpecValue];
-          console.log(skuId);
-          // 判断是否与当前skuid一样，就不重新请求
-          if (this.$route.params.ids != skuId) {
-            this.$router.replace(`/detail/${skuId}`);
+        // 获取当前对应的id
+        const valId = val.id;
+        console.log(valId);
+
+        // 获取有效的销售属性对象
+        // const specV2Json = this.specV2Json
+        // 把属性值的id保存到数组容器中
+        this.specs[index0] = valId;
+        // 把数组中的所有数字变成字符串，中间以|的方式隔开
+        const selectedSpecValue = this.specs.join("|");
+
+        // 获取有效字符串的keys
+        //let keys = Object.keys(this.specV2Json)
+        // 将当前字符串与有效的字符串进行匹配
+        this.specV2Json.forEach((item) => {
+          if (item[selectedSpecValue]) {
+            // 存在就获取对应的skuid
+            let skuId = item[selectedSpecValue];
+            console.log(skuId);
+            // 判断是否与当前skuid一样，就不重新请求
+            if (this.$route.params.ids != skuId) {
+              this.$router.replace(`/detail/${skuId}`);
+            }
           }
-        }
-      });
+        });
+      
     },
 
     // 改变商品数量
@@ -370,7 +349,6 @@ export default {
         let spec_values = this.specV2[0].spec_values;
         let arr = [];
         if (spec_values) {
-          // console.log(shopInfo.spec_v2[0].spec_values)
           arr = spec_values.map((item) => {
             return item.id;
           });
@@ -388,20 +366,18 @@ export default {
           val = attrInfo[Object.keys(attrInfo)[1]].spec_value_id;
         }
 
-        console.log(1111);
-        console.log(arr);
-        console.log(attrInfo[Object.keys(attrInfo)[1]].spec_value_id);
-        console.log(22222);
-
         let index = arr.indexOf(String(val));
         console.log(index);
+        // this.$set(this.specIndex, index)
+        if (this.specIndex) {
+          index = this.specIndex;
+        }
+
         return index;
       },
     },
 
-    set() {
-      
-    }
+    set() {},
   },
   watch: {
     // 监视商品的数量

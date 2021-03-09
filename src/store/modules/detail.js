@@ -126,7 +126,7 @@ const getters = {
         delete obj[item]
       }
     })
-    console.log(obj)
+    
 
     let obj2 = {}
     let spu = state.detailInfo.spu
@@ -154,13 +154,13 @@ const getters = {
           delete obj2[item]
         }
       })
-      console.log(obj2)
+     
     }
     
     // 是否有库存的数组
     let isStocks = []
     let length = Object.keys(obj).length
-    console.log(length)
+
     for (const key in obj) {
       let temp = []
       obj[key].forEach((item)=>{
@@ -175,7 +175,6 @@ const getters = {
       })
       isStocks.push(temp)
     }
-    console.log(isStocks)
     return isStocks
   },
 
@@ -211,18 +210,13 @@ const getters = {
           }
         })
       })
-      // console.log(spec)
-      // console.log(skuInfoWithStock)
-      // console.log(attr)
-      // console.log(keys)
-      // console.log(specV2)
+      
 
       // 给选中的销售属性加上一个isChecked=true，否则为false
       specV2.forEach(item => {
         keys.forEach(item2 => {
           if (item.spec_id == item2) {
             item.spec_values.forEach(item3 => {
-              // console.log(item3.id,attr[item2].spec_value_id)
               if (item3.id == attr[item2].spec_value_id) {
                 Vue.set(item3, 'isChecked', true)
                 // item3.isChecked = true
