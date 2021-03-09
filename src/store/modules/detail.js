@@ -66,13 +66,48 @@ const getters = {
 
   },
 
+  // 当前第一个销售属性所处的下标
+  // specIndex(state) {
+
+  //   let shopInfo = state.detailInfo.shop_info
+  //   let arr = []
+  //   if(shopInfo) {
+  //     // console.log(shopInfo.spec_v2[0].spec_values)
+  //     arr = shopInfo.spec_v2[0].spec_values.map(item=>{
+  //       return item.id
+  //     })
+  //   }
+  //   // Object.keys(obj).forEach(item => {
+  //   //   if (obj[item].length == 0) {
+  //   //     delete obj[item]
+  //   //   }
+  //   // })
+
+  //   // 获取当前的第一个销售属性id
+  //   let attrInfo = state.detailInfo.attr_info
+  //   let val
+  //   if(attrInfo) {
+  //     val = attrInfo[Object.keys(attrInfo)[1]].spec_value_id
+  //   }
+
+  //   console.log(1111)
+  //   console.log(arr)
+  //   console.log(attrInfo[Object.keys(attrInfo)[1]].spec_value_id)
+  //   console.log(22222)
+    
+  //   let index = arr.indexOf(String(val))
+  //   console.log(index)
+  //   return index
+
+  // },
+
   // 所有销售属性是否有库存对应的对象
   AllspecV2Json(state) {
     let obj = {}
     let shop_info = state.detailInfo.shop_info
     if (shop_info) {
       let specV2 = state.detailInfo.shop_info.spec_v2
-      console.log(specV2)
+      
       specV2.forEach((item, index) => {
         item.spec_values.forEach(item2 => {
           let id1 = item2.id
@@ -217,7 +252,7 @@ const getters = {
         })
       })
 
-      console.log(specV2)
+     
 
 
 
@@ -260,11 +295,7 @@ const getters = {
     let attrInfo = state.detailInfo.attr_info
     let color
     if(attrInfo) {
-      console.log(attrInfo)
-      let num = 58
-      let obj = attrInfo[num]
-      console.log(4444444)
-      console.log(obj)
+      let obj = attrInfo[Object.keys(attrInfo)[0]]
       color = obj.value
     }
    
@@ -275,9 +306,12 @@ const getters = {
     if (shop_info) {
       title = shop_info.title
       sub_title = shop_info.sub_title
-      goodsView = shop_info.tpl_content.base.images.goods_view.map(item => {
-        return item.url
-      })
+      let goods_view = shop_info.tpl_content.base.images.goods_view || shop_info.tpl_content.base.images.goods_view_mobile
+      if(goods_view) {
+        goodsView = goods_view.map(item=>{
+          return item.url
+        })
+      }
 
       // attr_info = shop_info.spec_json.map(item => {
       //   let spec_id = item.spec_id

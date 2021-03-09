@@ -26,6 +26,7 @@ Vue.use(Input);
 Vue.use(Form);
 Vue.use(Switch);
 Vue.use(FormItem);
+Vue.prototype.$loading = Loading;
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;

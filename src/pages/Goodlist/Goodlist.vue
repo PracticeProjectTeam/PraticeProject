@@ -30,6 +30,7 @@ export default {
     }
   },
   mounted(){
+    this.load = this.$loading.service({text:'加载中'})
     // 获取商品列表
     this.getGoodList()
   },
@@ -42,6 +43,7 @@ export default {
         this.goodList = [...result.data.data.list]
         // 用于保存原始排序(综合)
         this.originGoodList = [...result.data.data.list]
+        this.load.close()
       }
     },
     // 设置排序规则

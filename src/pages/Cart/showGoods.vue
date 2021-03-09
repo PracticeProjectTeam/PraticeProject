@@ -46,7 +46,7 @@
                 {{goodInfoList[index].shop_info.spec_json[0].show_name}}
               </span>
               <span>|</span>
-              <span>{{goodInfoList[index].shop_info.spec_json[1].show_name}}</span>
+              <span v-if="goodInfoList[index].shop_info.spec_json[1]">{{goodInfoList[index].shop_info.spec_json[1].show_name}}</span>
             </div>
           </div>
         </div>
@@ -274,7 +274,7 @@ export default {
         type: "warning",
       })
         .then(() => {
-          this.cartList.splice(index)
+          this.cartList.splice(index,1)
             // 请求修改数据
             this.$API.reqChangeCart(localStorage.getItem("UID"),this.cartList)
             .then(() => {
