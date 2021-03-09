@@ -1,8 +1,9 @@
-import {reqUserOrder} from '@/api'
+import {reqUserOrder,reqGetGoodInfoList} from '@/api'
 
 const state = {
    orderList:[],
-   ids:[]
+   ids:[],
+   goodInfoList:[]
 }
 const mutations = {
   // 获取订单数据订单页面
@@ -16,6 +17,16 @@ const mutations = {
         })
       ids.push(arr)
       })
+      // 获取商品详情列表
+      state.ids = ids
+      let goodInfoList = []
+      state.ids.forEach(async (item)=>{
+        const result = await reqGetGoodInfoList(item.toString())
+        if(result.status===200){
+          goodInfoList.push(result.data.data.list)
+        }
+      })
+      state.goodInfoList = goodInfoList
    
   }
 }

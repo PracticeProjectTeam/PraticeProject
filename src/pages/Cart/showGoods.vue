@@ -197,8 +197,14 @@ export default {
     };
   },
   mounted() {
+    this.load = this.$loading.service({ text: "加载中" })
     //mine
     this.$store.dispatch("getCartList",localStorage.getItem("UID"))
+    
+    
+
+    
+    
   },
   computed: {
     ...mapGetters(["totalCount", "totalPrice"]),
@@ -224,7 +230,9 @@ export default {
       }
     }
   },
-  
+  updated(){
+    this.load.close()
+  },
 
   methods: {
     //对话框内容
@@ -275,6 +283,7 @@ export default {
       })
         .then(() => {
           this.cartList.splice(index,1)
+          this.goodInfoList.splice(index,1)
             // 请求修改数据
             this.$API.reqChangeCart(localStorage.getItem("UID"),this.cartList)
             .then(() => {

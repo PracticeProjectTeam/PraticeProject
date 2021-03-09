@@ -40,7 +40,6 @@ const actions = {
   // 获取商品详细信息列表
   async getGoodInfoList({commit,state}){
     const result = await reqGetGoodInfoList(state.ids)
-    console.log("resul;t",result)
     if(result.status==200){
       if(result.data.data){
         commit("GETGOODINFOLIST",result.data.data.list)

@@ -49,12 +49,12 @@
                         </div>
                     </div>
                     <!-- 查看详情 -->
-                    <div class="section-border" v-for="item in orderList" :key="item.orderId">
+                    <div class="section-border" v-for="(order,index) in orderList" :key="order.orderId">
                         <div class="order-title">
                             <div class="order-left">
-                                <span>{{item.orderTime}}</span>
+                                <span>{{order.orderTime}}</span>
                                 订单号:
-                                <a href="">{{item.orderId}}</a>
+                                <a href="">{{order.orderId}}</a>
                             </div>
                             <div class="order-right">
                                 <span>单价</span>
@@ -65,28 +65,28 @@
                         </div>
                         <div  class="order-cart">
                             <div  class="order-info">
-                                <div  class="order-items">
-                                    <div  class="items-thumb"><a href=""><img :src="item.Url" alt></a>
+                                <div  class="order-items" v-for="goodInfo in goodInfoList[index]" :key="goodInfo.id" >
+                                    <div  class="items-thumb"><a href=""><img :src="goodInfo.shop_info.ali_image" alt></a>
                                     </div>
                                     <div  class="items-title">
                                         <div  class="name">
                                             <a title="坚果 R2（浅黑色，8G + 128GB）" href="/item/100162801" target="_blank">
-                                                {{item.name}}
+                                                {{goodInfo.name}}
                                             </a>
                                         </div>
                                     </div>
                                     
                                     <div  class="right goods-num">
-                                        {{item.unit}}
+                                        {{goodInfo.price}}
                                     </div>
                                     <div  class="rights goods-num">
-                                        {{item.quantity}}
+                                        {{order.orderCart[index].count}}
                                     </div>
                                 </div>
                             </div>
                             <div  class="order-operation">
                                 <div  class="total-price">
-                                    {{item.pay}}
+                                    {{orderPrice}}
                                 </div>
                                 <div  class="order-status">
                                     <a  href="javascript:;">
@@ -214,8 +214,17 @@ export default {
   computed:{
 			...mapState({
 				orderList:state=>state.order.orderList ,
-                check:state=>state.order.check 
+                goodInfoList:state=>state.order.goodInfoList
 			}),
+            orderPrice(){
+                let price = 0
+                this.orderList.forEach((order,index1)=>{
+                    order.orderCart.forEach((good,index2)=>{
+                        price+=good.count * this.goodInfoList[index1][index2].price
+                    })
+                })
+                return price
+            }
             
   },
   methods:{
