@@ -71,8 +71,15 @@
             <section class="item-spec-wrapper clearfix item-spec-package" v-for="(attr,index) in specV2" :key="index">
               <div class="item-spec">
                 <span class="spec-title">{{attr.spec_name}}选择</span>
-                <ul class="spec-info">
-                  <li class="normal" :class="[value.isChecked?'active':'', AllspecV2Json[index+1][index2+1]&&!value.isChecked&&index!=0?'disabled':'']"  v-for="(value,index2) in attr.spec_values" :key="value.id" @click="setVal(value,attr.spec_values,index)">
+                <ul class="spec-info" v-if="index==0">
+                  <li class="normal" :class="[value.isChecked?'active':'']" v-for="(value) in attr.spec_values" :key="value.id" @click="setVal(value,attr.spec_values,index)">
+                    <aside class="spec-item item-inline">
+                      <h1 class="item-name">{{value.item_value}}</h1>
+                    </aside>
+                  </li>
+                </ul>
+                <ul class="spec-info" v-if="index==1">
+                  <li class="normal" :class="[value.isChecked?'active':'',!AllspecV2Json[specIndex][index2]?'disabled':'']" v-for="(value,index2) in attr.spec_values" :key="value.id" @click="setVal(value,attr.spec_values,index)">
                     <aside class="spec-item item-inline">
                       <h1 class="item-name">{{value.item_value}}</h1>
                     </aside>
@@ -189,6 +196,8 @@
         </figure>
       </aside>
     </div>
+    <!--到货通知弹窗-->
+    <div class="d"></div>
   </div>
 </template>
 <script>
@@ -204,13 +213,11 @@ export default {
       specs: [], //可选择的销售属性
       isActive: false,
       isStocks: [],
-      // load:{}
+      specIndex:null,
     };
   },
   mounted() {
-    this.load = this.$loading.service({text:'加载中'})
-
-    
+    this.load = this.$loading.service({ text: "加载中" });
   },
   updated() {
     let wrapperHeight = document.querySelector(".wrapper").clientHeight;
@@ -224,7 +231,37 @@ export default {
         this.footer = true;
       }
     });
-    this.load.close()
+    this.load.close();
+
+    let spec_values = this.specV2[0].spec_values;
+        let arr = [];
+        if (spec_values) {
+          // console.log(shopInfo.spec_v2[0].spec_values)
+          arr = spec_values.map((item) => {
+            return item.id;
+          });
+        }
+        // Object.keys(obj).forEach(item => {
+        //   if (obj[item].length == 0) {
+        //     delete obj[item]
+        //   }
+        // })
+
+        // 获取当前的第一个销售属性id
+        let attrInfo = this.skuInfo.attrInfo;
+        let val;
+        if (attrInfo) {
+          val = attrInfo[Object.keys(attrInfo)[1]].spec_value_id;
+        }
+
+        console.log(1111);
+        console.log(arr);
+        console.log(attrInfo[Object.keys(attrInfo)[1]].spec_value_id);
+        console.log(22222);
+
+        let index = arr.indexOf(String(val));
+        console.log(index);
+        this.specIndex = index
   },
   methods: {
     // 选择缩略图
@@ -243,6 +280,11 @@ export default {
 
     // 点击属性值，修改选中项，同时发送请求获取属性值对应的商品
     setVal(val, attr, index) {
+      console.log(77777777777777777777)
+      console.log(index)
+      console.log(this.AllspecV2Json[specIndex][index2])
+      // 把当前下标变成index
+      this.specIndex = index;
       // 把当前的属性值对象所在的数组进行遍历
       attr.forEach((value) => {
         // this.$set(value,'isChecked',false)
@@ -276,35 +318,38 @@ export default {
 
     // 改变商品数量
     changeNumber(num) {
-      this.count += num * 1
+      if (this.skuInfo.stock > 0) {
+        this.count += num * 1;
+      }
     },
 
     // 加入购物车
     async addToCart() {
       // 获取sukId和count
-      const skuId = this.$route.params.ids
-      const count = this.count
+      const skuId = this.$route.params.ids;
+      const count = this.count;
       const item = {
         skuId,
         count,
-        isSelected:"true"
-      }
-      const result = await this.$API.reqGetToCart()
-      let cartList = result.data[0].cartList
-      cartList.push(item)
+        isSelected: "true",
+      };
+      let userId = localStorage.getItem("UID");
+      const result = await this.$API.reqUserShopCart(userId);
+      let cartList = result.data[0].cartList;
+      cartList.push(item);
 
-      const result2 = await this.$API.reqAddToCart(cartList)
-      if(result2.status == 200) {
-        console.log('添加成功')
+      const result2 = await this.$API.reqAddToCart(userId, cartList);
+      if (result2.status == 200) {
+        console.log("添加成功");
+        this.$router.push("/cart");
       }
-
     },
 
     // 回到顶部
     toTop() {
-      document.body.scrollTop = 0
-      document.documentElement.scrollTop = 0
-    }
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    },
   },
   computed: {
     ...mapState({}),
@@ -316,15 +361,54 @@ export default {
       "promotions",
       "accessory",
       "specV2Json",
-      'AllspecV2Json'
+      "AllspecV2Json",
+      // "specIndex",
     ]),
+
+    specIndex1: {
+      get() {
+        let spec_values = this.specV2[0].spec_values;
+        let arr = [];
+        if (spec_values) {
+          // console.log(shopInfo.spec_v2[0].spec_values)
+          arr = spec_values.map((item) => {
+            return item.id;
+          });
+        }
+        // Object.keys(obj).forEach(item => {
+        //   if (obj[item].length == 0) {
+        //     delete obj[item]
+        //   }
+        // })
+
+        // 获取当前的第一个销售属性id
+        let attrInfo = this.skuInfo.attrInfo;
+        let val;
+        if (attrInfo) {
+          val = attrInfo[Object.keys(attrInfo)[1]].spec_value_id;
+        }
+
+        console.log(1111);
+        console.log(arr);
+        console.log(attrInfo[Object.keys(attrInfo)[1]].spec_value_id);
+        console.log(22222);
+
+        let index = arr.indexOf(String(val));
+        console.log(index);
+        return index;
+      },
+    },
+
+    set() {
+      
+    }
   },
   watch: {
     // 监视商品的数量
     count(value) {
-      // 
-      if(value<=0) {
-        this.count = 1
+      //
+      if (value <= 0) {
+        this.count = 1;
       }
     },
     // 监视route,route信息改变就请求商品信息数据
@@ -351,7 +435,6 @@ export default {
           });
         });
 
-        
         this.specs = temp;
       },
     },
@@ -374,7 +457,6 @@ export default {
     //     })
     //   }
     // }
-
   },
 };
 </script>
@@ -638,12 +720,12 @@ html {
                 }
               }
             }
-             & > li.normal {
+            & > li.normal {
               float: left;
               border: 1px solid red;
               border-radius: 7px;
               cursor: pointer;
-              transition: box-shadow .15s linear;
+              transition: box-shadow 0.15s linear;
               margin-right: 10px;
               margin-bottom: 10px;
             }
@@ -658,8 +740,6 @@ html {
               cursor: not-allowed;
               border: 1px dotted #e5e5e5;
             }
-
-           
           }
         }
       }

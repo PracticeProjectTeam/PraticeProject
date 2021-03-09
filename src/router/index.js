@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 // 引入路由表
 import routes from './routes'
 
+
 // 声明使用
 Vue.use(VueRouter)
 // 创建并暴露路由器

@@ -8,16 +8,21 @@
 
 <script>
 // 引入组件
-import Footer from './components/Footer/Footer.vue'
-import Header from './components/Header/Header.vue'
+import Header from "./components/Header/Header.vue";
+import Footer from "./components/Footer/Footer.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
+    Header,
     Footer,
-    Header
-  }
-}
+  },
+};
 </script>
 
 <style>
+#app {
+  background: #ededed;
+  color: #666;
+  font-size: 14px;
+}
 </style>

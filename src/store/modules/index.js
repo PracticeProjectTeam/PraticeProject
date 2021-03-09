@@ -1,9 +1,11 @@
 // 引入模块
 import shopcart from './shopcart.js'
-import item from './detail.js'
+import user from './user.js'
+import detail from './detail.js'
 
 // 导出moduels
 export default {
   shopcart,
-  item
+  user,
+  detail
 }
