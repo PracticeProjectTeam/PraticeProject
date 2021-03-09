@@ -250,8 +250,6 @@ export default {
         vue.set(item, "count", targetNum);
         // 请求修改数据
         await this.$API.reqChangeCart(localStorage.getItem("UID"),this.cartList)
-        // 修改成功后弹窗
-        this.$message.success("修改成功！")
         // 重新获取页面数据
         this.$store.dispatch("getCartList",localStorage.getItem("UID"))
       } else {

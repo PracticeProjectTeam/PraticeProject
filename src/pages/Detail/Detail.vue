@@ -281,7 +281,7 @@ export default {
       const item = {
         skuId,
         count,
-        isSelected:"true"
+        isSelected:true
       }
       let userId = localStorage.getItem("UID")
       const result = await this.$API.reqUserShopCart(userId)

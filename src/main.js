@@ -13,6 +13,7 @@ import * as API from '@/api'
 
 // 把API接口函数暴露在每个组件的实例对象上
 Vue.prototype.$API = API
+Vue.prototype.$bus= new Vue()
 
 Vue.config.productionTip = false
 new Vue({

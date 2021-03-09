@@ -9,7 +9,7 @@ const state = {
   ids:'', //skuId列表
 }
 const mutations = {
-  // 获取商品列表和skuId列表
+  // 保存商品列表和skuId列表
   GETCARTLIST(state,cartList){
     state.cartList = cartList
     // 获取skuId列表
@@ -18,7 +18,6 @@ const mutations = {
       ids.push(item.skuId)
     })
     state.ids = ids.toString()
-    console.log(state.ids)
   },
   // 获取商品详细信息列表
   GETGOODINFOLIST(state,goodInfoList){
@@ -32,7 +31,9 @@ const actions = {
     if(result.status==200){
       let cartList = result.data[0].cartList
       commit("GETCARTLIST",cartList)
+      //// 获取商品详细信息列表
       dispatch('getGoodInfoList')
+      
     }
     
   },
@@ -41,7 +42,9 @@ const actions = {
     const result = await reqGetGoodInfoList(state.ids)
     console.log("resul;t",result)
     if(result.status==200){
-      commit("GETGOODINFOLIST",result.data.data.list)
+      if(result.data.data){
+        commit("GETGOODINFOLIST",result.data.data.list)
+      }
     }
   }
 }
@@ -63,7 +66,7 @@ const getters = {
 totalPrice() {
     return state.cartList.reduce((preTotal, goodsItem,index) => {
         if (goodsItem.isSelected) {
-            return preTotal + goodsItem.count * state.goodInfoList[index].price
+            return preTotal + goodsItem.count * (state.goodInfoList[index]?state.goodInfoList[index].price:0)
         }else{
             return preTotal
         }
