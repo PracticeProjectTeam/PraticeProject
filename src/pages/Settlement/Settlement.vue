@@ -53,16 +53,18 @@
           
         </div>
         <div class="table-good-list">
-          <div class="table-good-item" v-for="(cart,index) in cartList" :key="index">
-            <div class="table-good-item-left">
-              <img :src="goodInfoList[index].shop_info.ali_image" alt="">
-              <p>{{goodInfoList[index].name}}</p>
-            </div>
-            <div class="table-good-item-right">
-              <p>￥{{goodInfoList[index].price}}.00</p>
-              <p>{{cart.count}}</p>
-              <p>￥{{goodInfoList[index].price}}.00</p>
-            </div>
+          <div class="table-good-item" v-for="(cart,index) in cartList" :key="index" >
+            <template  v-if="goodInfoList[index]">
+              <div class="table-good-item-left">
+                <img :src="goodInfoList[index].shop_info.ali_image" alt="">
+                <p>{{goodInfoList[index].name}}</p>
+              </div>
+              <div class="table-good-item-right">
+                <p>￥{{goodInfoList[index].price}}.00</p>
+                <p>{{cart.count}}</p>
+                <p>￥{{goodInfoList[index].price}}.00</p>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -85,13 +87,34 @@
         
       </div>
     </div>
+    <div class="product-fix-bar ">
+        <div class="fix-bar-wrapper">
+          <h1 class="bar-text">您已选择了</h1>
+          <div class="bar-device-info">
+            <h1 class="clearfix">
+              <span class="title"></span>
+            </h1>
+            <h2></h2>
+          </div>
+          <div @click="toOrderList" class="bar-btn">
+            <a>提交订单</a>
+          </div>
+          <div class="no-discount-price">
+            <div class="bar-price">
+              <i>￥</i>
+              <span>{{totalPrice}}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
   </div>
 </template>
 <script>
 // 引入axios
 // import axios from '../../api/ajax'
 // 引入辅助函数
-import {mapState} from 'vuex'
+import {mapState,mapGetters} from 'vuex'
 export default {
   name: 'Settlement',
   data(){
@@ -106,7 +129,8 @@ export default {
       cartList:state=>state.cart.cartList,
       goodInfoList:state=>state.cart.goodInfoList
 
-    })
+    }),
+    ...mapGetters(["totalPrice"])
   },
   mounted(){
     this.$store.dispatch('getUserAddress',localStorage.getItem("UID"))
@@ -124,6 +148,9 @@ export default {
     checked(){
       return 0
     },
+    toOrderList(){
+      this.$router.push('/order')
+    },
     addUserAddress(){
         this.$alert(`
         <input type="text" placeholder="收货人姓名">
@@ -137,6 +164,121 @@ export default {
 }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
+  .product-fix-bar {
+    width: 100%;
+    height: 60px;
+    position: fixed;
+    bottom: 0;
+    background: #fafafa;
+    border-top: 1px solid #e3e3e3;
+    box-shadow: 0 -1px 3px rgb(0 0 0 / 4%);
+    z-index: 25;
+    &.follow {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .fix-bar-wrapper {
+      width: 1220px;
+      line-height: 20px;
+      margin: 12px auto 0;
+      .bar-text {
+        color: #707070;
+        font-size: 12px;
+        font-weight: 500;
+        margin-right: 20px;
+        float: left;
+      }
+      .bar-device-info {
+        position: relative;
+        margin-right: 20px;
+        font-size: 14px;
+        float: left;
+        h1 {
+          font-size: 100%;
+          font-weight: 400;
+          .title {
+            color: #707070;
+            float: left;
+            font-weight: 700;
+          }
+        }
+        h2 {
+          font-size: 12px;
+          color: #9d9d9d;
+          font-weight: 400;
+        }
+      }
+      .bar-btn {
+        background-color: #6383c6;
+        background-image: linear-gradient(#6383c6, #4262af);
+        width: 118px;
+        height: 38px;
+        line-height: 38px;
+        text-align: center;
+        color: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+        border-radius: 6px;
+        margin-top: -2px;
+        padding: 1px;
+        float: right;
+        a {
+          color: #fff;
+        }
+
+        &.white-btn {
+          height: 40px;
+          padding: 0;
+          border: 1px solid #dedede;
+          background-color: #f8f8f8;
+          background-image: linear-gradient(#fbfbfb, #f5f5f5);
+          a {
+            height: 40px;
+            line-height: 40px;
+            padding: 0;
+            color: #646464;
+            font-weight: 700;
+            background-color: #f8f8f8;
+            background-image: linear-gradient(#fbfbfb, #f5f5f5);
+            box-shadow: none;
+            text-shadow: none;
+          }
+        }
+        &.notice {
+          background-color: #ffd330;
+          background-image: linear-gradient(#ffd330, #ffd22d);
+          cursor: not-allowed;
+          a {
+            color: #fff;
+            cursor: pointer;
+            background-color: #c7a522;
+            background-image: linear-gradient(#ffd330, #ffd22d);
+            box-shadow: inset 0 1px 2px #ffeb83;
+            text-shadow: none;
+          }
+        }
+      }
+
+      .no-discount-price {
+        float: right;
+        margin-right: 20px;
+        text-align: right;
+        .bar-price {
+          position: relative;
+          font-size: 20px;
+          font-weight: 700;
+          color: #d44d44;
+          line-height: 40px;
+          i {
+            font-style: normal;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
   .settlement-container{
     .foot-bar{
       width: 100%;

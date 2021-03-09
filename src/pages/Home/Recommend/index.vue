@@ -10,7 +10,7 @@
         </div>
         <div class="Recommendgoods" v-for="itemgoods in item.tabs[0].tab_items" :key="itemgoods">
           <!-- <div class="Recommendimg"> -->
-            <router-link class="Recommendimg" :to="`/item/${itemgoods.sku_id}`">
+            <router-link class="Recommendimg" :to="`/detail/${itemgoods.sku_id}`">
               <img :src="itemgoods.spu.sku_info[0].ali_image" alt="" />
             </router-link>
           <!-- </div> -->

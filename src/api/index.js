@@ -26,6 +26,8 @@ export const reqGetShopgoods = () => ajax.get(`/product/skus?ids=100187101&with_
 export const reqLogin = (phone) => axios.get(`http://localhost:3000/user?phone=${phone}`)
 // 获取用户地址
 export const reqUserAddress = (userId) => axios.get(`http://localhost:3000/userAddress/${userId}`)
+// 获取用户信息
+export const reqUserInfo = (userId) => axios.get(`http://localhost:3000/user/${userId}`)
 
 // export const reqPromotions = (with_num)=>axios.get(`product/promotions?with_num=${with_num}`)
 
@@ -57,3 +59,8 @@ export const reqChangeOrder =(userId,orderList)=>axios({
 
 //获取首页数据接口
 export const reqHome = ()=>ajax.get(`/product/home`)
+
+
+
+// 请求用户订单列表
+export const reqUserOrder = (userId)=>axios.get(`http://localhost:3000/userOrder/${userId}`)

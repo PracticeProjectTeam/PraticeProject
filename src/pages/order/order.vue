@@ -2,9 +2,9 @@
   <div id="zhuti">
         <div class="order">
             <div class="order-one">
-                <div class="order-top" v-for="items in check" :key="items.ID">
-                    <img :src="items.Url" alt="">
-                    <h6>{{items.name}}</h6>
+                <div class="order-top">
+                    <img src="../../assets/avatar-default.png" alt="">
+                    <h6>{{userInfo.nickName}}</h6>
                 </div>
                 <ul>
                     <li><a :class="cuts?'lanse':''" @click="oncut" >我的订单</a></li>
@@ -40,7 +40,8 @@ export default {
   data(){
       return {
           cut:"A",
-          cuts:'true'
+          cuts:'true',
+          userInfo:{}
       }
   },
   methods:{
@@ -63,12 +64,16 @@ export default {
 			}),
             
   },
-  mounted() { 
-   
+  async mounted() { 
+        this.$store.dispatch("getOrderList")
         this.$bus.$on('curr',(data)=>{
         this.cut = data
         console.log(data)
       })
+      const result = await this.$API.reqUserInfo(localStorage.getItem("UID"))
+      if(result.status===200){
+          this.userInfo = result.data
+      }
     
   }
   
