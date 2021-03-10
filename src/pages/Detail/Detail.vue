@@ -8,7 +8,7 @@
             <figure class="thumbnail">
               <ul>
                 <li @click="changeCurrentIndex(index)" :class="{on:imgCurrentIndex==index}" v-for="(item,index) in aliImages" :key="item">
-                  <img :src="item">
+                  <img v-lazy="item">
                 </li>
               </ul>
             </figure>
@@ -16,7 +16,7 @@
             <figure class="thumb">
               <ul>
                 <li class="on">
-                  <img alt :src="aliImages[imgCurrentIndex]">
+                  <img alt v-lazy="aliImages[imgCurrentIndex]">
                 </li>
               </ul>
             </figure>
@@ -148,7 +148,7 @@
           <h2>产品信息</h2>
         </article>
         <div class="item-info">
-          <img :src="item" v-for="item in skuInfo.goodsView" :key="item">
+          <img v-lazy="item" v-for="item in skuInfo.goodsView" :key="item">
         </div>
       </section>
       <section class="gray-box clearfix">
