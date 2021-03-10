@@ -187,9 +187,9 @@ export default {
   },
   async mounted(){
     // 检查用户是否登录
-    if(localStorage.getItem("UID")){
-      this.isLogin = true
-    }
+    // if(localStorage.getItem("UID")){
+    //   this.isLogin = true
+    // }
     // 获取nav数据
     this.getNavData()
     
@@ -211,7 +211,7 @@ export default {
       handler(){
         this.navCurrentIndex = -1
       }
-    }
+    },
   },
   computed:{
     isLogin:{

@@ -31,6 +31,7 @@ export default {
   border-radius: 8px;
   overflow: hidden;
   .Navfigure {
+    width: 25%;
     margin: 0;
     img {
       width: 100%;

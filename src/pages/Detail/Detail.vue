@@ -313,22 +313,27 @@ export default {
         isSelected:true
       }
       let userId = localStorage.getItem("UID")
-      const result = await this.$API.reqUserShopCart(userId)
-      let cartList = result.data[0].cartList
-      let haveBuyGood = cartList.find(cartItem=>{
-        return cartItem.skuId===item.skuId
-      })
-      if(haveBuyGood){
-        haveBuyGood.count = haveBuyGood.count+1
+      if(!userId){
+        this.$router.push('/login')
       }else{
-        cartList.push(item)
-      }
+        const result = await this.$API.reqUserShopCart(userId)
+        let cartList = result.data[0].cartList
+        let haveBuyGood = cartList.find(cartItem=>{
+          return cartItem.skuId===item.skuId
+        })
+        if(haveBuyGood){
+          haveBuyGood.count = haveBuyGood.count+1
+        }else{
+          cartList.push(item)
+        }
 
-      const result2 = await this.$API.reqChangeCart(userId,cartList)
-      if(result2.status == 200) {
-        console.log('添加成功')
-        this.$router.push('/cart')
+        const result2 = await this.$API.reqChangeCart(userId,cartList)
+        if(result2.status == 200) {
+          console.log('添加成功')
+          this.$router.push('/cart')
+        }
       }
+      
     },
 
     // 回到顶部

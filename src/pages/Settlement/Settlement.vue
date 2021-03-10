@@ -1,12 +1,26 @@
 <template>
   <div class="settlement-container">
+    <!-- 操作地址 -->
+    <div class="form-container" v-if="addressOption">
+      <div class="message-form" >
+        <input type="text" placeholder="收货人姓名">
+        <input type="text" placeholder="手机号">
+        <input type="text" placeholder="区号(可选)">
+        <input type="text" placeholder="固定电话(可选)">
+        <select name="请选中省份" id="" value="1">
+          <option disabled selected hidden>请选择</option>
+          <option value="福建">福建</option>
+        </select>
+      </div>
+    </div>
+    
     <!-- 订单结算信息单元 -->
     <div class="settle-box">
       <div class="settle-title">
         <h3>收货信息</h3>
       </div>
       <div class="settle-content">
-        <div class="receive-message-box active" v-for="(item,index) in addressList" :key="index" >
+        <div class="receive-message-box" :class="index==addressIndex?'active':''" v-for="(item,index) in addressList" :key="index" @click="addressIndex=index" >
           <p>{{index}}</p>
           <div class="receive-message-name">{{item.name}}</div>
           <div class="receive-message-phone">{{item.phone}}</div>
@@ -120,19 +134,23 @@ export default {
   data(){
     return {
       invoiceOwner: '个人',
-      agree:false
+      agree:false,
+      addressOption:false,
+      addressIndex:0,
     }
   },
   computed:{
     ...mapState({
       addressList:state=>state.user.userAddress.addressList,
       cartList:state=>state.cart.cartList,
-      goodInfoList:state=>state.cart.goodInfoList
+      goodInfoList:state=>state.cart.goodInfoList,
+      orderList:state=>state.order.orderList
 
     }),
     ...mapGetters(["totalPrice"])
   },
   mounted(){
+    this.$store.dispatch("getOrderList")
     this.$store.dispatch('getUserAddress',localStorage.getItem("UID"))
     this.$store.dispatch("getCartList",localStorage.getItem("UID"))
     
@@ -149,21 +167,40 @@ export default {
       return 0
     },
     toOrderList(){
+      this.orderList.push({
+          orderId: "210305267249218",
+          orderTime: "2021-03-05",
+          state:"已支付",
+          receiveAddress: this.addressList[this.addressIndex],
+          orderCart:this.cartList,
+          invoiceOwner: this.invoiceOwner
+          })
+      this.$API.reqChangeOrder(localStorage.getItem("UID"),)
       this.$router.push('/order')
     },
     addUserAddress(){
-        this.$alert(`
-        <input type="text" placeholder="收货人姓名">
-        <input type="text" placeholder="手机号">
-        <input type="text" placeholder="区号可选">`, '管理收货地址', {
-          dangerouslyUseHTMLString: true
-        });
-      
+        this.addressOption = true
     }
   }
 }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
+  .form-container{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top:0;
+    bottom: 0;
+    background-color: rgba(0,0,0,.5);
+    .message-form{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+      
+    }
+  }
+  
   .product-fix-bar {
     width: 100%;
     height: 60px;
