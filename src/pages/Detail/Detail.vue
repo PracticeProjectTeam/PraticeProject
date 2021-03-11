@@ -383,9 +383,15 @@ export default {
         // 获取当前的第一个销售属性id
         let attrInfo = this.skuInfo.attrInfo;
         let val;
-        if (attrInfo) {
-          val = attrInfo[Object.keys(attrInfo)[1]].spec_value_id;
+        // if (attrInfo) {
+        //   val = attrInfo[Object.keys(attrInfo)[1]].spec_value_id;
+        // }
+        for (const key in attrInfo) {
+          if(attrInfo[key].spec_name === '颜色') {
+             val = attrInfo[key].spec_value_id
+          } 
         }
+
 
         let index = arr.indexOf(String(val));
         console.log(index);
