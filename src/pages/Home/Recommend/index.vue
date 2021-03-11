@@ -6,12 +6,12 @@
       </header>
       <div class="allRecommend">
         <div class="mainimg">
-          <a :href="item.bigImg.link" target="_blank"><img :src="item.bigImg.image" alt="" /></a>
+          <a :href="item.bigImg.link" target="_blank"><img v-lazy="item.bigImg.image" alt="" /></a>
         </div>
         <div class="Recommendgoods" v-for="itemgoods in item.tabs[0].tab_items" :key="itemgoods">
           <!-- <div class="Recommendimg"> -->
             <router-link class="Recommendimg" :to="`/detail/${itemgoods.sku_id}`">
-              <img :src="itemgoods.spu.sku_info[0].ali_image" alt="" />
+              <img v-lazy="itemgoods.spu.sku_info[0].ali_image" alt="" />
             </router-link>
           <!-- </div> -->
           <div class="Recommendtext">

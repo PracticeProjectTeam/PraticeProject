@@ -76,7 +76,7 @@
               <div class="table-good-item-right">
                 <p>￥{{goodInfoList[index].price}}.00</p>
                 <p>{{cart.count}}</p>
-                <p>￥{{goodInfoList[index].price}}.00</p>
+                <p>￥{{goodInfoList[index].price*cart.count}}.00</p>
               </div>
             </template>
           </div>

@@ -11,13 +11,13 @@
     <div class="good-area">
       <ul class="good-list">
         <li class="good-item" v-for="goodItem in goodList" :key="goodItem.id" @click="toGoodDetail(goodItem.shop_info.default_sku)" >
-          <img :src="goodItem.sku_info[0].ali_image" alt="">
+          <img v-lazy="goodItem.sku_info[0].ali_image" alt="">
           <h3>{{goodItem.name}}</h3>
           <h5>{{goodItem.sku_info[0].sub_title}}</h5>
           <!-- <div class="color-selector" v-show="goodItem.skuList.length>1" >
             <ul class="color-list" >
               <li class="color-item" :class="goodItem.colorIndex==index?'active':''" v-for="(item,index) in goodItem.skuList" :key="item.skuId" @mouseenter="selectColor(goodItem,index)" >
-                <img :src="item.skuColor" alt="">
+                <img v-lazy="item.skuColor" alt="">
               </li>
             </ul>
           </div> -->

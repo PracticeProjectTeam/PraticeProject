@@ -4,13 +4,13 @@
         <li class="good-item" v-for="goodItem in goodList" :key="goodItem.spuInfo.skuId" @click="toGoodDetail(goodItem.spuInfo.skuId)"  >
           <div class="active-tag" v-if="goodItem.spuInfo.tagText&&goodItem.spuInfo.store_nums>0" 
           :class="goodItem.spuInfo.tagText=='满减'?'full-reduction':'straight-down'" >{{goodItem.spuInfo.tagText}}</div>
-          <img :src="goodItem.skuList[goodItem.colorIndex?goodItem.colorIndex:0].images" alt="">
+          <img v-lazy="goodItem.skuList[goodItem.colorIndex?goodItem.colorIndex:0].images" alt="">
           <h3>{{goodItem.spuInfo.spuTitle}}</h3>
           <h5>{{goodItem.spuInfo.activeTitle||goodItem.spuInfo.spuSubTitle}}</h5>
           <div class="color-selector" v-show="goodItem.skuList.length>1" >
             <ul class="color-list" >
               <li class="color-item" :class="goodItem.colorIndex==index?'active':''" v-for="(item,index) in goodItem.skuList" :key="item.skuId" @mouseenter="selectColor(goodItem,index)" >
-                <img :src="item.skuColor" alt="">
+                <img v-lazy="item.skuColor" alt="">
               </li>
             </ul>
           </div>
