@@ -12,6 +12,9 @@ import VueLazyLoad from 'vue-lazyload'
 import '@/plugin/element-ui.js'
 // 引入所有的api接口函数
 import * as API from '@/api'
+// 引入懒加载
+import VueLazyload from 'vue-lazyload'
+Vue.use(VueLazyload)
 
 // 把API接口函数暴露在每个组件的实例对象上
 Vue.prototype.$API = API
