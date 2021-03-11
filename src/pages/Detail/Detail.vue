@@ -173,7 +173,11 @@
           <div @click="addToCart" v-if="skuInfo.stock&&skuInfo.in_stock" class="bar-btn">
             <a>加入购物车</a>
           </div>
-          <div :class="[skuInfo.stock>0&&skuInfo.in_stock?'white-btn':'disabled notice','bar-btn']">
+          <!-- <div :class="[skuInfo.stock>0&&skuInfo.in_stock?'white-btn':'disabled notice','bar-btn']">
+            <a v-if="skuInfo.stock&&skuInfo.in_stock">现在购买</a>
+            <a v-else>到货通知</a>
+          </div> -->
+          <div :class="[skuInfo.stock>0&&skuInfo.in_stock?'white-btn':'disabled notice','bar-btn']" v-if="!(skuInfo.stock&&skuInfo.in_stock)">
             <a v-if="skuInfo.stock&&skuInfo.in_stock">现在购买</a>
             <a v-else>到货通知</a>
           </div>
@@ -318,14 +322,19 @@ export default {
       }else{
         const result = await this.$API.reqUserShopCart(userId)
         let cartList = result.data[0].cartList
-        let haveBuyGood = cartList.find(cartItem=>{
+        if(cartList.length>0){
+          let haveBuyGood = cartList.find(cartItem=>{
           return cartItem.skuId===item.skuId
-        })
-        if(haveBuyGood){
-          haveBuyGood.count = haveBuyGood.count+1
+          })
+          if(haveBuyGood){
+            haveBuyGood.count = haveBuyGood.count+1
+          }else{
+            cartList.push(item)
+          }
         }else{
           cartList.push(item)
         }
+        
 
         const result2 = await this.$API.reqChangeCart(userId,cartList)
         if(result2.status == 200) {

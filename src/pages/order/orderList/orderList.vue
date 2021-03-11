@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <!-- 查看详情 -->
-                    <div class="section-border" v-for="(order,index) in orderList" :key="order.orderId">
+                    <div class="section-border" v-for="(order,index) in orderList" :key="index">
                         <div class="order-title">
                             <div class="order-left">
                                 <span>{{order.orderTime}}</span>
@@ -60,12 +60,14 @@
                                 <span>单价</span>
                                 <span>数量</span>
                                 <span>应付金额</span>
-                                <span>已关闭</span>
+                                <!-- <span>已关闭</span> -->
+                                <span></span>
+                                <span></span>
                             </div>        
                         </div>
                         <div  class="order-cart">
                             <div  class="order-info">
-                                <div  class="order-items" v-for="goodInfo in goodInfoList[index]" :key="goodInfo.id" >
+                                <div  class="order-items" v-for="(goodInfo,index2) in goodInfoList[index]" :key="goodInfo.id" >
                                     <div  class="items-thumb"><a href=""><img :src="goodInfo.shop_info.ali_image" alt></a>
                                     </div>
                                     <div  class="items-title">
@@ -77,20 +79,20 @@
                                     </div>
                                     
                                     <div  class="right goods-num">
-                                        {{goodInfo.price}}
+                                        ￥{{goodInfo.price}}
                                     </div>
-                                    <div  class="rights goods-num">
-                                        {{order.orderCart[index].count}}
+                                    <div  class="rights goods-num" v-if="order.orderCart[index2]">
+                                        X{{order.orderCart[index2].count}}
                                     </div>
                                 </div>
                             </div>
                             <div  class="order-operation">
                                 <div  class="total-price">
-                                    {{orderPrice}}
+                                    ￥{{orderPrice[index]}}
                                 </div>
                                 <div  class="order-status">
                                     <a  href="javascript:;">
-                                        <button  @click="concutt" type="button" class="btn" style="width: 74px;">
+                                        <button  @click="concutt(index)" type="button" class="btn" style="width: 74px;">
                                             <a>查看详情</a>
                                         </button>
                                     </a>
@@ -217,20 +219,29 @@ export default {
                 goodInfoList:state=>state.order.goodInfoList
 			}),
             orderPrice(){
+                let priceArr = []
                 let price = 0
                 this.orderList.forEach((order,index1)=>{
+                    
                     order.orderCart.forEach((good,index2)=>{
-                        price+=good.count * this.goodInfoList[index1][index2].price
+                        if(this.goodInfoList[index1]){
+                            if(this.goodInfoList[index1][index2]){
+                                price+=good.count * this.goodInfoList[index1][index2].price
+                            }
+                        }
+                        
                     })
+                    priceArr.push(price)
+                    price = 0
                 })
-                return price
+                return priceArr
             }
             
   },
   methods:{
-      concutt(){
+      concutt(index){
         //   this.cut = 'C'
-          this.$bus.$emit('curr','C')
+          this.$bus.$emit('curr',{cut:'C',index})
       }
   },
 
@@ -343,7 +354,8 @@ export default {
                                 }
                             }
                             &>span:nth-child(4){
-                                padding-right: 20px;
+                                padding-right: 0px;
+                                margin-right: -5px;
                                 font-weight: bold;
                             }
                         }
@@ -397,11 +409,13 @@ export default {
                                 .goods-num {
                                     padding: 20px 0 0 0px;
                                     line-height: 50px;
+                                    margin-right: 14px;
 
                                 }
 
                                 .rights{
-                                    margin-left: 50px; 
+                                    padding-left: 50px; 
+                                    text-align: right;
                                 }
                             }
                         }
@@ -420,7 +434,10 @@ export default {
                             }
 
                             .order-status{
+                                cursor: pointer;
                                 a {
+                                    cursor: pointer;
+
                                     button{
                                         font-size: 14px;
                                         margin-left: 12px;

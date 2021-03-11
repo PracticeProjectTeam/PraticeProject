@@ -18,7 +18,7 @@
             <div class="one">
                 <orderList v-if="cut=='A'"/>
                 <afterSale v-else-if="cut=='B'"/>
-                <particulars v-else/>
+                <particulars :orderIndex="orderIndex" v-else/>
             </div>
             
         </div>
@@ -41,7 +41,8 @@ export default {
       return {
           cut:"A",
           cuts:'true',
-          userInfo:{}
+          userInfo:{},
+          orderIndex:''
       }
   },
   methods:{
@@ -60,14 +61,15 @@ export default {
 
   computed:{
 			...mapState({
-                check:state=>state.order.check 
+                check:state=>state.order.check,
 			}),
             
   },
   async mounted() { 
         this.$store.dispatch("getOrderList")
         this.$bus.$on('curr',(data)=>{
-        this.cut = data
+        this.cut = data.cut
+        this.orderIndex = data.index
         console.log(data)
       })
       const result = await this.$API.reqUserInfo(localStorage.getItem("UID"))
@@ -107,6 +109,13 @@ export default {
             border-radius: 10px;
             border: 1px solid #DBDBDB;
             overflow: hidden;
+            ul{
+                li{
+                    cursor: pointer;
+                }
+                
+            }
+            
 
             .order-top {
                 width: 210px;

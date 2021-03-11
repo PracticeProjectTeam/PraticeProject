@@ -1,0 +1,130 @@
+{
+  "user": [
+    {
+      "id": "000001",
+      "nickName": "mine",
+      "phone": "15859145025",
+      "password": 123456
+    },
+    {
+      "id": "000002",
+      "nickName": "ljs",
+      "userName": "ljs",
+      "password": 123456
+    },
+    {
+      "id": "000003",
+      "nickName": "lxq",
+      "userName": "lxq",
+      "password": 123456
+    },
+    {
+      "id": "000004",
+      "nickName": "xiawang",
+      "userName": "xiawang",
+      "password": 123456
+    }
+  ],
+  "userAddress": [
+    {
+      "id": "000001",
+      "addressList": [
+        {
+          "name": "mine",
+          "phone": 15859145025,
+          "address": "福建省 福清市 福州市"
+        },
+        {
+          "name": "ljs",
+          "phone": 11223344555,
+          "address": "广东省 深圳市 宝安区"
+        }
+      ]
+    },
+    {
+      "id": "000002",
+      "addressList": [
+        {
+          "name": "ljs",
+          "phone": 15859145025,
+          "address": "福建省 福清市 福州市"
+        }
+      ]
+    },
+    {
+      "id": "000003",
+      "addressList": [
+        {
+          "name": "lxq",
+          "phone": 15859145025,
+          "address": "福建省 福清市 福州市"
+        }
+      ]
+    },
+    {
+      "id": "000003",
+      "addressList": [
+        {
+          "name": "xiawang",
+          "phone": 15859145025,
+          "address": "福建省 福清市 福州市"
+        }
+      ]
+    }
+  ],
+  "userShopCart": [
+    {
+      "id": "000001",
+      "cartList": []
+    }
+  ],
+  "userOrder": [
+    {
+      "id": "000001",
+      "orderList": [
+        {
+          "orderId": "210305267249218",
+          "orderTime": "2021-03-05",
+          "state": "已支付",
+          "receiveAddress": {
+            "name": "mine",
+            "phone": 15859145025,
+            "address": "福建省 福清市 福州市"
+          },
+          "orderCart": [
+            {
+              "skuId": "100060201",
+              "count": 1,
+              "isSelected": "true"
+            },
+            {
+              "skuId": "100162805",
+              "count": 2,
+              "isSelected": true
+            }
+          ],
+          "invoiceOwner": "个人"
+        },
+        {
+          "orderId": "210305267249218",
+          "orderTime": "2021-03-11",
+          "state": "已支付",
+          "receiveAddress": {
+            "name": "mine",
+            "phone": 15859145025,
+            "address": "福建省 福清市 福州市"
+          },
+          "orderCart": [
+            {
+              "skuId": "100162801",
+              "count": 3,
+              "isSelected": true
+            }
+          ],
+          "invoiceOwner": "个人"
+        }
+        
+      ]
+    }
+  ]
+}

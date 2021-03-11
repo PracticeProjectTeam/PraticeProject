@@ -12,7 +12,7 @@
         <div>操作</div>
       </div>
     </div>
-    <div class="for-details">
+    <div class="for-details"  style="display:none">
       <h4 class="a1">
         <label for="">满减</label>
       </h4>
@@ -99,7 +99,7 @@
         </div>
       </div>
     </div>
-    <div class="instructions">
+    <div class="instructions"  style="display:none">
       <div class="instructions-image a1">
         <!-- <img src="../images/ia_100000003612.png" alt="" /> -->
       </div>
@@ -215,6 +215,9 @@ export default {
     // 监听是否全选
     isAllSelected:{
       get(){
+        if(this.cartList.length==0){
+          return false
+        }
         return this.cartList.every(item=>item.isSelected)
       },
       async set(val){

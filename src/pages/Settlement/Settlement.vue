@@ -103,7 +103,7 @@
     </div>
     <div class="product-fix-bar ">
         <div class="fix-bar-wrapper">
-          <h1 class="bar-text">您已选择了</h1>
+          <!-- <h1 class="bar-text">您已选择了</h1> -->
           <div class="bar-device-info">
             <h1 class="clearfix">
               <span class="title"></span>
@@ -129,6 +129,8 @@
 // import axios from '../../api/ajax'
 // 引入辅助函数
 import {mapState,mapGetters} from 'vuex'
+// 引入moment
+import moment from 'moment'
 export default {
   name: 'Settlement',
   data(){
@@ -166,17 +168,25 @@ export default {
     checked(){
       return 0
     },
-    toOrderList(){
+    async toOrderList(){
+      if(!this.agree){
+        this.$message.error("请先阅读并同意用户须知")
+        return
+      }
       this.orderList.push({
           orderId: "210305267249218",
-          orderTime: "2021-03-05",
+          orderTime: moment(Date.now()).format("YYYY-MM-DD"),
           state:"已支付",
           receiveAddress: this.addressList[this.addressIndex],
           orderCart:this.cartList,
           invoiceOwner: this.invoiceOwner
           })
-      this.$API.reqChangeOrder(localStorage.getItem("UID"),)
-      this.$router.push('/order')
+      const result = await this.$API.reqChangeOrder(localStorage.getItem("UID"),this.orderList)
+      if(result.status===200){
+        await this.$API.reqChangeCart(localStorage.getItem("UID"),[])
+        this.$router.push('/order')
+      }
+      
     },
     addUserAddress(){
         this.addressOption = true

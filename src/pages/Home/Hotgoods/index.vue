@@ -44,7 +44,7 @@
     >
       <swiper-slide class="hotgoods" v-for="item in homeDataList.data.home_hot" :key="item.spu_id">
         <!-- <div class="hotimg"> -->
-          <router-link class="hotimg" :to="`/item/${item.sku_id}`">
+          <router-link class="hotimg" :to="`/detail/${item.sku_id}`">
             <img :src="item.spu.sku_info[0].ali_image" alt="" />
           </router-link>
         <!-- </div> -->

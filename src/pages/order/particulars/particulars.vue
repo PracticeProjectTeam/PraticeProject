@@ -1,10 +1,10 @@
 <template>
     <div class="order-two">
-                <div class="order-two-1" v-for="item in Detail" :key="item.goods_nums">
+                <div class="order-two-1">
                     <!-- title版块 -->
                     <div class="order-two-2">
                         <span>
-                            订单号: {{item.porder_id}}
+                            订单号: {{orderList[orderIndex].orderId}}
                         </span>
                     </div>
                     <!-- 进度条 -->
@@ -12,12 +12,12 @@
                         <div class="schedule">
                             <div class="schedule-title">
                                 <span>下单</span>
-                                <span>订单关闭</span>
+                                <span>{{orderList[orderIndex].state}}</span>
                             </div>
                             <el-progress :percentage="100" status="success"></el-progress>
                             <div class="schedule-botton">
-                                <p>2021-03-08</p>
-                                <p>10.12</p>
+                                <p>{{orderList[orderIndex].orderTime}}</p>
+                                <!-- <p>10.12</p> -->
                             </div>
                         </div>
                         
@@ -33,25 +33,25 @@
                     </div>
                     <!-- 商品信息 -->
                     <div  class="order-parameter">
-                        <div  class="order-items">
+                        <div  class="order-items" v-for="(goodInfo,index) in goodInfoList[orderIndex]" :key="index">
                             <div  class="items-thumb">
-                                <a href=""><img :src="item.img" alt></a>
+                                <a href=""><img :src="goodInfo.shop_info.ali_image" alt></a>
                                 <div  class="nam">
                                     <a title="坚果 R2（浅黑色，8G + 128GB）" href="/item/100162801" target="_blank">
-                                        {{item.goods_name}}
+                                        {{goodInfo.name}}
                                     </a>
                                 </div>
                             </div>
                             
                             <div  class=" goods-num">
                                 <span>
-                                    ￥{{item.order_amount}}
+                                    ￥{{goodInfo.price}}
                                 </span>
-                                <span>
-                                    {{item.goods_nums}}
+                                <span v-if="orderList[orderIndex].orderCart[index]">
+                                    {{orderList[orderIndex].orderCart[index].count}}
                                 </span>
-                                <span>
-                                    ￥{{item.goods_price}}
+                                <span v-if="orderList[orderIndex].orderCart[index]">
+                                    ￥{{orderList[orderIndex].orderCart[index].count*goodInfo.price}}
                                 </span>
                             </div>
                         </div>
@@ -59,13 +59,13 @@
                     <!-- 商品金额 -->
                     <div class="order-money">
                         <div class="dq">
-                            <p>商品总计：￥{{item.goods_price}}</p>
-                            <p>运费：+ ￥{{item.pgoods_id}}</p>
+                            <p>商品总计：￥{{allPrice}}</p>
+                            <p>运费：+10 ￥</p>
                             <p class="hs">优惠：- 
-                                <span>￥{{item.discount}}</span>
+                                <span>￥</span>
                             </p>
                             <p class="monry">应付金额：
-                                <span>￥{{item.toy}}</span>
+                                <span>￥{{allPrice+10}}</span>
                             </p>
                         </div>
                     </div>
@@ -74,9 +74,9 @@
                         <span>收货信息</span>
                     </div>
                     <div class="order-cargo">
-                        <p>姓名：隔壁老王</p>
-                        <p>联系电话：1336666666</p>
-                        <p>详细地址： 广东省 深圳市 宝安区 草围新一村</p>
+                        <p>姓名：{{orderList[orderIndex].receiveAddress.name}}</p>
+                        <p>联系电话：{{orderList[orderIndex].receiveAddress.phone}}</p>
+                        <p>详细地址：{{orderList[orderIndex].receiveAddress.address}}</p>
                     </div>
                     <!-- 发票信息 -->
                     <div class="order-goods-info">
@@ -84,7 +84,7 @@
                     </div>
                     <div class="order-cargo">
                         <p>发票类型：电子发票</p>
-                        <p>发票抬头：个人</p>
+                        <p>发票抬头：{{orderList[orderIndex].invoiceOwner}}</p>
                         <p>发票内容：购买商品明细</p>
                     </div>  
                 </div>
@@ -99,10 +99,31 @@ export default {
             
         }
     },
+    props:['orderIndex'],
     computed:{
 		...mapState({
-			Detail:state=>state.order.Detail ,
-		}),   
+			orderList:state=>state.order.orderList ,
+            goodInfoList:state=>state.order.goodInfoList
+		}),
+        allCount(){
+            let count = 0
+            this.orderList[this.orderIndex].orderCart.forEach(item=>{
+                count+=item.count
+            })
+            return count
+        },
+        allPrice(){
+            let price = 0
+            this.orderList[this.orderIndex].orderCart.forEach((good,index2)=>{
+                if(this.goodInfoList[this.orderIndex]){
+                    if(this.goodInfoList[this.orderIndex][index2]){
+                        price+=good.count * this.goodInfoList[this.orderIndex][index2].price
+                    }
+                }
+                
+            })
+            return price
+        }
     },
 }
 </script>
